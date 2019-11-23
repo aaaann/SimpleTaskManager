@@ -1,12 +1,8 @@
-package com.annevonwolffen.androidschool.taskmanager.view;
+package com.annevonwolffen.androidschool.taskmanager.ui.view;
 
 import android.os.Bundle;
 
 import com.annevonwolffen.androidschool.taskmanager.R;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
-
-import android.view.View;
 
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;

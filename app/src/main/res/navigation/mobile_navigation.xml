@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/nav_tasks"
-        android:name="com.annevonwolffen.androidschool.taskmanager.view.fragments.TasksFragment"
+        android:name="com.annevonwolffen.androidschool.taskmanager.ui.view.fragments.TasksFragment"
         android:label="Tasks"
         tools:layout="@layout/fragment_tasks"/>
 

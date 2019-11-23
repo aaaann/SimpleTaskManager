@@ -1,4 +1,4 @@
-package com.annevonwolffen.androidschool.taskmanager.view.fragments;
+package com.annevonwolffen.androidschool.taskmanager.ui.view.fragments;
 
 import androidx.fragment.app.Fragment;
 

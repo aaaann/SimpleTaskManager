@@ -1,4 +1,4 @@
-package com.annevonwolffen.androidschool.taskmanager.view.fragments;
+package com.annevonwolffen.androidschool.taskmanager.ui.view.fragments;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -11,7 +11,7 @@ import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 
 import com.annevonwolffen.androidschool.taskmanager.R;
-import com.annevonwolffen.androidschool.taskmanager.view.adapters.TabAdapter;
+import com.annevonwolffen.androidschool.taskmanager.ui.view.adapters.TabAdapter;
 import com.google.android.material.tabs.TabLayout;
 
 public class TasksFragment extends Fragment {
