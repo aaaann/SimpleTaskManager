@@ -7,6 +7,7 @@ import com.annevonwolffen.androidschool.taskmanager.data.repository.TaskReposito
 import com.annevonwolffen.androidschool.taskmanager.ui.contract.ICurrentTasksContract;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import static com.annevonwolffen.androidschool.taskmanager.ui.util.ConvertUtils.dateToString;
@@ -35,8 +36,8 @@ public class CurrentTasksPresenter implements ICurrentTasksContract.IPresenter,
     }
 
     @Override
-    public void insertTask() {
-
+    public void insertTask(String title, Date dateTime, boolean isNotifEnabled) {
+        mRepository.insertTask(new Task(title, dateTime, isNotifEnabled), this);
     }
 
     @Override
@@ -55,5 +56,21 @@ public class CurrentTasksPresenter implements ICurrentTasksContract.IPresenter,
     @Override
     public void onFinish(List<Task> tasks) {
         mCurrentTasks = tasks;
+        mView.showData();
+    }
+
+    @Override
+    public void onFinish(long id, Task task) {
+        if (id != -1) {
+
+            task.setId(id);
+            mCurrentTasks.add(task);
+            mView.showData();
+        }
+    }
+
+    @Override
+    public void onFinish(int count) {
+
     }
 }

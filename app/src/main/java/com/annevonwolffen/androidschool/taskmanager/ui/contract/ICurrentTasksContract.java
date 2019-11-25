@@ -1,5 +1,7 @@
 package com.annevonwolffen.androidschool.taskmanager.ui.contract;
 
+import java.util.Date;
+
 public interface ICurrentTasksContract {
     interface IView {
         void showData();
@@ -17,7 +19,7 @@ public interface ICurrentTasksContract {
     interface IPresenter {
         void loadData();
         void onAddClicked(); // todo: vielleicht move to listener interface
-        void insertTask();
+        void insertTask(String title, Date date, boolean isNotif);
 
         void onBindTaskRowViewAtPosition(int position, ICurrentTaskRow taskRow);
         int getTasksRowsCount();

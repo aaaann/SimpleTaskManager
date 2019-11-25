@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "fd2aca9500b8d0b6a35d0624b8656a3e",
+    "identityHash": "e43abd26c9bcd5ea87c6a32b453315c6",
     "entities": [
       {
         "tableName": "Task",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `title` TEXT, `date_to` INTEGER, `is_done` INTEGER NOT NULL, `is_notif_added` INTEGER NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `title` TEXT, `date_to` INTEGER, `is_done` INTEGER NOT NULL DEFAULT false, `is_notif_added` INTEGER NOT NULL DEFAULT true)",
         "fields": [
           {
             "fieldPath": "mId",
@@ -30,13 +30,15 @@
             "fieldPath": "mIsDone",
             "columnName": "is_done",
             "affinity": "INTEGER",
-            "notNull": true
+            "notNull": true,
+            "defaultValue": "false"
           },
           {
             "fieldPath": "mIsNotifAdded",
             "columnName": "is_notif_added",
             "affinity": "INTEGER",
-            "notNull": true
+            "notNull": true,
+            "defaultValue": "true"
           }
         ],
         "primaryKey": {
@@ -52,7 +54,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'fd2aca9500b8d0b6a35d0624b8656a3e')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'e43abd26c9bcd5ea87c6a32b453315c6')"
     ]
   }
 }

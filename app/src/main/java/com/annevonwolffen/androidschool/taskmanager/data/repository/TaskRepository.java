@@ -19,12 +19,12 @@ public class TaskRepository {
     private final TaskDao mTaskDao;
 
 
-    public TaskRepository(Context context){
+    public TaskRepository(Context context) {
         TasksDb tasksDb = TasksDb.getDatabaseInstance(context);
         mTaskDao = tasksDb.taskDao();
     }
 
-    public void getAllTasksByDone(final boolean isDone, final OnDbOperationListener onDbOperationListener) {
+    public void getAllTasksByDone(final boolean isDone, final OnDbOperationListener listener) {
         new AsyncTask<Void, Void, List<Task>>() {
             @Override
             protected List<Task> doInBackground(Void... voids) {
@@ -38,47 +38,67 @@ public class TaskRepository {
             protected void onPostExecute(List<Task> tasks) {
                 super.onPostExecute(tasks);
 
-                onDbOperationListener.onFinish(tasks);
+                listener.onFinish(tasks);
             }
         }.execute();
     }
 
-    public List<Task> getAllTasksDone() {
-        return mTaskDao.findAllByIsDone();
-    }
 
-    public void insertTask(final Task task) {
-        new AsyncTask<Void, Void, Void>() {
+    public void insertTask(final Task task, final OnDbOperationListener listener) {
+        new AsyncTask<Void, Void, Long>() {
+
             @Override
-            protected Void doInBackground(Void... voids) {
-                mTaskDao.insert(task);
-                return null;
+            protected Long doInBackground(Void... voids) {
+                return mTaskDao.insert(task);
             }
-        }.execute();
-    }
 
-    public void updateTask(final Task task) {
-        new AsyncTask<Void, Void, Void>() {
             @Override
-            protected Void doInBackground(Void... voids) {
-                mTaskDao.update(task);
-                return null;
+            protected void onPostExecute(Long id) {
+                super.onPostExecute(id);
+
+                listener.onFinish(id, task);
             }
         }.execute();
     }
 
-    public void deleteTask(final Task task) {
-        new AsyncTask<Void, Void, Void>() {
+    public void updateTask(final Task task, final OnDbOperationListener listener) {
+        new AsyncTask<Void, Void, Integer>() {
             @Override
-            protected Void doInBackground(Void... voids) {
-                mTaskDao.delete(task);
-                return null;
+            protected Integer doInBackground(Void... voids) {
+                return mTaskDao.update(task);
+            }
+
+            @Override
+            protected void onPostExecute(Integer count) {
+                super.onPostExecute(count);
+
+                listener.onFinish(count);
+            }
+        }.execute();
+    }
+
+    public void deleteTask(final Task task, final OnDbOperationListener listener) {
+        new AsyncTask<Void, Void, Integer>() {
+            @Override
+            protected Integer doInBackground(Void... voids) {
+                return mTaskDao.delete(task);
+            }
+
+            @Override
+            protected void onPostExecute(Integer count) {
+                super.onPostExecute(count);
+
+                listener.onFinish(count);
             }
         }.execute();
     }
 
 
-    public interface OnDbOperationListener{
+    public interface OnDbOperationListener {
         void onFinish(List<Task> tasks);
+
+        void onFinish(long id, Task task);
+
+        void onFinish(int count);
     }
 }

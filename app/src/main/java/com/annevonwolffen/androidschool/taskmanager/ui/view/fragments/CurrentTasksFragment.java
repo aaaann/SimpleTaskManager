@@ -4,9 +4,11 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -17,10 +19,15 @@ import com.annevonwolffen.androidschool.taskmanager.data.repository.TaskReposito
 import com.annevonwolffen.androidschool.taskmanager.ui.contract.ICurrentTasksContract;
 import com.annevonwolffen.androidschool.taskmanager.ui.presenter.CurrentTasksPresenter;
 import com.annevonwolffen.androidschool.taskmanager.ui.view.adapters.CurrentTasksAdapter;
+import com.annevonwolffen.androidschool.taskmanager.ui.view.dialogfragments.AddTaskDialogFragment;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-public class CurrentTasksFragment extends Fragment implements ICurrentTasksContract.IView {
+import java.util.Date;
+
+public class CurrentTasksFragment extends Fragment implements ICurrentTasksContract.IView,
+        AddTaskDialogFragment.AddDialogListener {
     public static final String PAGE_TITLE = "Current";
+    private static final String DIALOG_TAG = "AddTaskDialogFragment";
 
     private ICurrentTasksContract.IPresenter mPresenter;
     private CurrentTasksAdapter mAdapter;
@@ -30,9 +37,9 @@ public class CurrentTasksFragment extends Fragment implements ICurrentTasksContr
     }
 
     public static CurrentTasksFragment newInstance() {
-        
+
         Bundle args = new Bundle();
-        
+
         CurrentTasksFragment fragment = new CurrentTasksFragment();
         fragment.setArguments(args);
         return fragment;
@@ -41,7 +48,7 @@ public class CurrentTasksFragment extends Fragment implements ICurrentTasksContr
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View root =  super.onCreateView(inflater, container, savedInstanceState);
+        View root = super.onCreateView(inflater, container, savedInstanceState);
 
         setPresenter();
         initRecyclerView(root);
@@ -89,11 +96,22 @@ public class CurrentTasksFragment extends Fragment implements ICurrentTasksContr
 
     @Override
     public void openAddingDialog() {
-        
+        DialogFragment dialog = new AddTaskDialogFragment();
+        dialog.show(getFragmentManager(), DIALOG_TAG);
     }
 
     @Override
     public void openDeletingDialog() {
 
+    }
+
+    @Override
+    public void onDialogPositiveClick(String title, Date dateTime, boolean isNotifEnabled) {
+        mPresenter.insertTask(title, dateTime, isNotifEnabled);
+    }
+
+    @Override
+    public void onDialogNegativeClick() {
+        Toast.makeText(requireContext(),"Задача не добавлена", Toast.LENGTH_LONG).show();
     }
 }

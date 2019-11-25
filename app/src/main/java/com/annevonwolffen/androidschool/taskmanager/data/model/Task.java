@@ -3,12 +3,23 @@ package com.annevonwolffen.androidschool.taskmanager.data.model;
 import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 import java.util.Date;
 
 @Entity
 public class Task {
+
+    public Task() { }
+
+    @Ignore
+    public Task(String title, Date date, boolean isNotifAdded) {
+        mTitle = title;
+        mDateTo = date;
+        mIsNotifAdded = isNotifAdded;
+    }
+
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id")
     private long mId;
@@ -19,10 +30,10 @@ public class Task {
     @ColumnInfo(name = "date_to")
     private Date mDateTo;
 
-    @ColumnInfo(name = "is_done")
+    @ColumnInfo(name = "is_done", defaultValue = "false")
     private boolean mIsDone;
 
-    @ColumnInfo(name = "is_notif_added")
+    @ColumnInfo(name = "is_notif_added", defaultValue = "true")
     private boolean mIsNotifAdded;
 
     public long getId() {
