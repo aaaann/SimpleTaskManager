@@ -17,6 +17,7 @@ import com.annevonwolffen.androidschool.taskmanager.data.repository.TaskReposito
 import com.annevonwolffen.androidschool.taskmanager.ui.contract.ICurrentTasksContract;
 import com.annevonwolffen.androidschool.taskmanager.ui.presenter.CurrentTasksPresenter;
 import com.annevonwolffen.androidschool.taskmanager.ui.view.adapters.CurrentTasksAdapter;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 public class CurrentTasksFragment extends Fragment implements ICurrentTasksContract.IView {
     public static final String PAGE_TITLE = "Current";
@@ -44,6 +45,7 @@ public class CurrentTasksFragment extends Fragment implements ICurrentTasksContr
 
         setPresenter();
         initRecyclerView(root);
+        initFab(root);
         return root;
     }
 
@@ -63,6 +65,16 @@ public class CurrentTasksFragment extends Fragment implements ICurrentTasksContr
         mRecyclerView.setAdapter(mAdapter);
     }
 
+    private void initFab(View root) {
+        FloatingActionButton fabAddTask = root.findViewById(R.id.fab_add);
+        fabAddTask.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mPresenter.onAddClicked();
+            }
+        });
+    }
+
     @Override
     public void onStart() {
         super.onStart();
@@ -77,7 +89,7 @@ public class CurrentTasksFragment extends Fragment implements ICurrentTasksContr
 
     @Override
     public void openAddingDialog() {
-
+        
     }
 
     @Override
