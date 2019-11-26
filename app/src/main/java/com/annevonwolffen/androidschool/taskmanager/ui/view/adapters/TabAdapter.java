@@ -12,8 +12,8 @@ import com.annevonwolffen.androidschool.taskmanager.ui.view.fragments.DoneTasksF
 public class TabAdapter extends FragmentPagerAdapter {
 
     private int mNumberOfPages;
-    private CurrentTasksFragment mCurrentTasksFragment;
-    private DoneTasksFragment mDoneTasksFragment;
+    private final CurrentTasksFragment mCurrentTasksFragment;
+    private final DoneTasksFragment mDoneTasksFragment;
 
     public TabAdapter(@NonNull FragmentManager fm, int numberOfPages) {
         super(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);

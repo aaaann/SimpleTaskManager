@@ -11,6 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Что сделать?"
+        android:layout_margin="10dp"
         app:errorEnabled="true">
 
         <com.google.android.material.textfield.TextInputEditText
@@ -23,7 +24,8 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Когда сделать?" />
+        android:text="Когда сделать?"
+        android:layout_margin="10dp"/>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -32,29 +34,31 @@
         <DatePicker
             android:id="@+id/date_picker"
             android:layout_width="wrap_content"
-            android:layout_height="52dp"
+            android:layout_height="wrap_content"
             android:calendarViewShown="false"
             android:datePickerMode="spinner" />
 
         <TimePicker
             android:id="@+id/time_picker"
             android:layout_width="wrap_content"
-            android:layout_height="52dp"
+            android:layout_height="wrap_content"
             android:timePickerMode="spinner" />
 
     </LinearLayout>
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="1dp"
+        android:layout_height="3dp"
         android:layout_marginTop="10dp"
         android:layout_marginBottom="8dp"
-        android:background="#000000" />
+        android:background="#000000"
+        android:layout_margin="8dp"/>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:layout_margin="10dp">
 
         <TextView
             android:layout_width="wrap_content"

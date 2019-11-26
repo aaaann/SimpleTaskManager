@@ -28,6 +28,7 @@ public class CurrentTasksFragment extends Fragment implements ICurrentTasksContr
         AddTaskDialogFragment.AddDialogListener {
     public static final String PAGE_TITLE = "Current";
     private static final String DIALOG_TAG = "AddTaskDialogFragment";
+    private static final int FRAGMENT_TAG = 0;
 
     private ICurrentTasksContract.IPresenter mPresenter;
     private CurrentTasksAdapter mAdapter;
@@ -97,6 +98,7 @@ public class CurrentTasksFragment extends Fragment implements ICurrentTasksContr
     @Override
     public void openAddingDialog() {
         DialogFragment dialog = new AddTaskDialogFragment();
+        dialog.setTargetFragment(this, FRAGMENT_TAG);
         dialog.show(getFragmentManager(), DIALOG_TAG);
     }
 
