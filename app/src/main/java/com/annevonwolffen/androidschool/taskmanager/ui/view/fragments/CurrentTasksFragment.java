@@ -1,6 +1,7 @@
 package com.annevonwolffen.androidschool.taskmanager.ui.view.fragments;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,6 +9,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DividerItemDecoration;
@@ -21,6 +23,8 @@ import com.annevonwolffen.androidschool.taskmanager.ui.presenter.CurrentTasksPre
 import com.annevonwolffen.androidschool.taskmanager.ui.view.adapters.CurrentTasksAdapter;
 import com.annevonwolffen.androidschool.taskmanager.ui.view.dialogfragments.AddTaskDialogFragment;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.BaseTransientBottomBar;
+import com.google.android.material.snackbar.Snackbar;
 
 import java.util.Date;
 
@@ -28,10 +32,12 @@ public class CurrentTasksFragment extends Fragment implements ICurrentTasksContr
         AddTaskDialogFragment.AddDialogListener {
     public static final String PAGE_TITLE = "Current";
     private static final String DIALOG_TAG = "AddTaskDialogFragment";
+    private static final String TAG = "CurrentTasksFragment";
     private static final int FRAGMENT_TAG = 0;
 
     private ICurrentTasksContract.IPresenter mPresenter;
     private CurrentTasksAdapter mAdapter;
+    private Snackbar mSnackbar;
 
     public CurrentTasksFragment() {
         super(R.layout.fragment_current_tasks);
@@ -54,6 +60,7 @@ public class CurrentTasksFragment extends Fragment implements ICurrentTasksContr
         setPresenter();
         initRecyclerView(root);
         initFab(root);
+        initSnackbar(root);
         return root;
     }
 
@@ -75,12 +82,25 @@ public class CurrentTasksFragment extends Fragment implements ICurrentTasksContr
 
     private void initFab(View root) {
         FloatingActionButton fabAddTask = root.findViewById(R.id.fab_add);
-        fabAddTask.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mPresenter.onAddClicked();
-            }
-        });
+        fabAddTask.setOnClickListener(v -> mPresenter.onAddClicked());
+    }
+
+    private void initSnackbar(View root) {
+        mSnackbar = Snackbar.make(root.findViewById(R.id.root_coordinator),
+                "Удален 1 элемент", Snackbar.LENGTH_LONG)
+                .setCallback(new Snackbar.Callback() {
+                                 @Override
+                                 public void onDismissed(Snackbar snackbar, int event) {
+                                     if (event == BaseTransientBottomBar.BaseCallback.DISMISS_EVENT_TIMEOUT) {
+                                         mPresenter.deleteTask();
+                                     }
+                                 }
+                             }
+                )
+                .setAction("ОТМЕНА", v -> {
+                    Toast.makeText(requireContext(), "Удаление отменено", Toast.LENGTH_LONG).show();
+                    mPresenter.onDeleteCancel();
+                });
     }
 
     @Override
@@ -103,8 +123,22 @@ public class CurrentTasksFragment extends Fragment implements ICurrentTasksContr
     }
 
     @Override
-    public void openDeletingDialog() {
+    public void openDeletingDialog(final int position) {
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(requireContext());
+        dialogBuilder.setMessage("Удалить выбранный элемент?");
 
+        dialogBuilder.setPositiveButton("ОК", (dialog, which) -> {
+            //mPresenter.deleteTask(position);
+            mPresenter.onDelete(position);
+        });
+        AlertDialog dialog = dialogBuilder.create();
+        dialog.show();
+    }
+
+    @Override
+    public void showSnackbar() {
+        Log.d(TAG, "showSnackbar: ");
+        mSnackbar.show();
     }
 
     @Override
@@ -114,6 +148,6 @@ public class CurrentTasksFragment extends Fragment implements ICurrentTasksContr
 
     @Override
     public void onDialogNegativeClick() {
-        Toast.makeText(requireContext(),"Задача не добавлена", Toast.LENGTH_LONG).show();
+        Toast.makeText(requireContext(), "Задача не добавлена", Toast.LENGTH_LONG).show();
     }
 }

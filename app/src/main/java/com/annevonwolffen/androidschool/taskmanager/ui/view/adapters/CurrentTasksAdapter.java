@@ -26,7 +26,7 @@ public class CurrentTasksAdapter extends RecyclerView.Adapter<CurrentTasksAdapte
     public CurrentTaskViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         return new CurrentTaskViewHolder(
                 LayoutInflater.from(parent.getContext())
-                        .inflate(R.layout.task_item, parent, false));
+                        .inflate(R.layout.task_item, parent, false), mPresenter);
     }
 
     @Override
@@ -45,14 +45,18 @@ public class CurrentTasksAdapter extends RecyclerView.Adapter<CurrentTasksAdapte
         private TextView mTitle;
         private TextView mDate;
         private ImageView mNotificationIcon;
+        private View mView;
+        private final ICurrentTasksContract.IPresenter mPresenter;
 
-        public CurrentTaskViewHolder(@NonNull View itemView) {
+        public CurrentTaskViewHolder(@NonNull View itemView, ICurrentTasksContract.IPresenter presenter) {
             super(itemView);
 
             mIcon = itemView.findViewById(R.id.iv_icon);
             mTitle = itemView.findViewById(R.id.tv_title);
             mDate = itemView.findViewById(R.id.tv_date);
             mNotificationIcon = itemView.findViewById(R.id.iv_is_notif_icon);
+            mView = itemView;
+            mPresenter = presenter;
         }
 
 
@@ -74,6 +78,14 @@ public class CurrentTasksAdapter extends RecyclerView.Adapter<CurrentTasksAdapte
         @Override
         public void setNotificationIcon(int color) {
             // todo: implement
+        }
+
+        @Override
+        public void setOnLongClickListener(final int position) {
+            mView.setOnLongClickListener(v -> {
+                mPresenter.onLongClick(position);
+                return true;
+            });
         }
     }
 }

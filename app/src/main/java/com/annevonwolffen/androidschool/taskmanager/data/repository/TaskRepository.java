@@ -72,7 +72,7 @@ public class TaskRepository {
             protected void onPostExecute(Integer count) {
                 super.onPostExecute(count);
 
-                listener.onFinish(count);
+                listener.onFinish(count, task);
             }
         }.execute();
     }
@@ -88,7 +88,7 @@ public class TaskRepository {
             protected void onPostExecute(Integer count) {
                 super.onPostExecute(count);
 
-                listener.onFinish(count);
+                listener.onFinish(count, task);
             }
         }.execute();
     }
@@ -99,6 +99,6 @@ public class TaskRepository {
 
         void onFinish(long id, Task task);
 
-        void onFinish(int count);
+        void onFinish(int count, Task task);
     }
 }
