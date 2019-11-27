@@ -3,6 +3,7 @@ package com.annevonwolffen.androidschool.taskmanager.ui.view.adapters;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -86,6 +87,11 @@ public class CurrentTasksAdapter extends RecyclerView.Adapter<CurrentTasksAdapte
                 mPresenter.onLongClick(position);
                 return true;
             });
+        }
+
+        @Override
+        public void setOnClickItemListener(int position) {
+            mView.setOnClickListener(v -> mPresenter.onItemClick(position));
         }
     }
 }

@@ -10,6 +10,7 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TimePicker;
@@ -24,20 +25,39 @@ import com.google.android.material.textfield.TextInputLayout;
 import java.util.Calendar;
 import java.util.Date;
 
+import static com.annevonwolffen.androidschool.taskmanager.ui.util.ConvertUtils.intDateFromStringDate;
+import static com.annevonwolffen.androidschool.taskmanager.ui.util.ConvertUtils.intTimeFromStringDate;
 import static com.annevonwolffen.androidschool.taskmanager.ui.util.ConvertUtils.stringToDate;
 
 public class AddTaskDialogFragment extends DialogFragment {
 
     private final static String TAG = "AddTaskDialogFragment";
+    private static final String ARG_ID = "argId";
+    private static final String ARG_TITLE = "argTitle";
+    private static final String ARG_DATE = "argDate";
+    private static final String ARG_IS_NOTIF = "argNotif";
 
     public interface AddDialogListener {
 
-        public void onDialogPositiveClick(String title, Date dateTime, boolean isNotifEnabled);
+        void onDialogPositiveClick(long id, String title, Date dateTime, boolean isNotifEnabled);
 
-        public void onDialogNegativeClick();
+        void onDialogNegativeClick();
     }
 
     AddDialogListener addDialogListener;
+
+    public static AddTaskDialogFragment newInstance(long id, String title, String date, boolean isNotifEnabled) {
+
+        Bundle args = new Bundle();
+        args.putLong(ARG_ID, id);
+        args.putString(ARG_TITLE, title);
+        args.putString(ARG_DATE, date);
+        args.putBoolean(ARG_IS_NOTIF, isNotifEnabled);
+
+        AddTaskDialogFragment fragment = new AddTaskDialogFragment();
+        fragment.setArguments(args);
+        return fragment;
+    }
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -56,51 +76,46 @@ public class AddTaskDialogFragment extends DialogFragment {
         LayoutInflater inflater = requireActivity().getLayoutInflater();
 
         final View root = inflater.inflate(R.layout.dialog_add_task, null);
+
         final EditText etTitle = root.findViewById(R.id.et_task_title);
+        etTitle.setText(getArguments() != null ? getArguments().getString(ARG_TITLE) : null);
+
+        final CheckBox chbxAddNotification = root.findViewById(R.id.chbx_add_notif);
+        chbxAddNotification.setChecked(getArguments() != null && getArguments().getBoolean(ARG_IS_NOTIF));
+
         final StringBuilder date = new StringBuilder();
         final StringBuilder time = new StringBuilder();
         final DatePicker taskDate = root.findViewById(R.id.date_picker);
-        Calendar calendar = Calendar.getInstance();
-        taskDate.init(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH), new DatePicker.OnDateChangedListener() {
-            @Override
-            public void onDateChanged(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                date.setLength(0);
-                date.append(defineDate(year, monthOfYear, dayOfMonth));
-            }
+        //Calendar calendar = Calendar.getInstance();
+        taskDate.init(getInitDataForDatePicker()[2], getInitDataForDatePicker()[1], getInitDataForDatePicker()[0], (view, year, monthOfYear, dayOfMonth) -> {
+            date.setLength(0);
+            date.append(defineDate(year, monthOfYear, dayOfMonth));
         });
         date.append(defineDate(taskDate.getYear(), taskDate.getMonth(), taskDate.getDayOfMonth()));
 
         final TimePicker taskTime = root.findViewById(R.id.time_picker);
         taskTime.setIs24HourView(true);
-        taskTime.setCurrentHour(calendar.get(Calendar.HOUR_OF_DAY));
+        taskTime.setCurrentHour(getInitDataForTimePicker()[0]);
+        taskTime.setCurrentMinute(getInitDataForTimePicker()[1]);
         time.append(defineTime(taskTime.getCurrentHour(), taskTime.getCurrentMinute()));
-        taskTime.setOnTimeChangedListener(new TimePicker.OnTimeChangedListener() {
-            @Override
-            public void onTimeChanged(TimePicker view, int hourOfDay, int minute) {
-                time.setLength(0);
-                time.append(defineTime(hourOfDay, minute));
-            }
+        taskTime.setOnTimeChangedListener((view, hourOfDay, minute) -> {
+            time.setLength(0);
+            time.append(defineTime(hourOfDay, minute));
         });
 
         builder.setView(root)
-                .setPositiveButton("ОК", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
+                .setPositiveButton("ОК", (dialog, which) -> {
 
-                        String title = etTitle.getText().toString();
-                        boolean isNotifEnabled = root.findViewById(R.id.chbx_add_notif).isEnabled();
-                        String dateTime = date.toString() + " " + time.toString();
-                        addDialogListener.onDialogPositiveClick(title, stringToDate(dateTime), isNotifEnabled);
-                        dialog.dismiss();
-                    }
+                    String title = etTitle.getText().toString();
+                    boolean isNotifEnabled = chbxAddNotification.isEnabled();
+                    String dateTime = date.toString() + " " + time.toString();
+                    addDialogListener.onDialogPositiveClick(getArguments() != null ? getArguments().getLong(ARG_ID) : -1, title, stringToDate(dateTime), isNotifEnabled);
+                    dialog.dismiss();
                 })
-                .setNegativeButton("Отмена", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
+                .setNegativeButton("Отмена", (dialog, which) -> {
 
-                        addDialogListener.onDialogNegativeClick();
-                        dialog.cancel();
-                    }
+                    addDialogListener.onDialogNegativeClick();
+                    dialog.cancel();
                 });
 
         AlertDialog addDialog = builder.create();
@@ -150,10 +165,27 @@ public class AddTaskDialogFragment extends DialogFragment {
                 year;
     }
 
-    ;
 
     private String defineTime(int hourOfDay, int minute) {
         return hourOfDay + ":" + minute;
+    }
+
+    private int[] getInitDataForDatePicker() {
+        if (getArguments() != null) {
+            return intDateFromStringDate(getArguments().getString(ARG_DATE));
+        } else {
+            Calendar calendar = Calendar.getInstance();
+            return new int[] {calendar.get(Calendar.DAY_OF_MONTH), calendar.get(Calendar.MONTH), calendar.get(Calendar.YEAR)};
+        }
+    }
+
+    private int[] getInitDataForTimePicker() {
+        if (getArguments() != null) {
+            return intTimeFromStringDate(getArguments().getString(ARG_DATE));
+        } else {
+            Calendar calendar = Calendar.getInstance();
+            return new int[] {calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE)};
+        }
     }
 
 

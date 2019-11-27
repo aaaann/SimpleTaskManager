@@ -14,6 +14,14 @@ public class Task {
     public Task() { }
 
     @Ignore
+    public Task(long id, String title, Date date, boolean isNotifAdded) {
+        mId = id;
+        mTitle = title;
+        mDateTo = date;
+        mIsNotifAdded = isNotifAdded;
+    }
+
+    @Ignore
     public Task(String title, Date date, boolean isNotifAdded) {
         mTitle = title;
         mDateTo = date;

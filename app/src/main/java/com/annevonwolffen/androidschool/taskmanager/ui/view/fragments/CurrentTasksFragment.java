@@ -123,6 +123,14 @@ public class CurrentTasksFragment extends Fragment implements ICurrentTasksContr
     }
 
     @Override
+    public void openUpdateDialog(long id, String title, String date, boolean isNotifAdded) {
+        Log.d(TAG, "openUpdateDialog() called with: id = [" + id + "], title = [" + title + "], date = [" + date + "], isNotifAdded = [" + isNotifAdded + "]");
+        DialogFragment dialog = AddTaskDialogFragment.newInstance(id, title, date, isNotifAdded);
+        dialog.setTargetFragment(this, FRAGMENT_TAG);
+        dialog.show(getFragmentManager(), DIALOG_TAG);
+    }
+
+    @Override
     public void openDeletingDialog(final int position) {
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(requireContext());
         dialogBuilder.setMessage("Удалить выбранный элемент?");
@@ -142,8 +150,9 @@ public class CurrentTasksFragment extends Fragment implements ICurrentTasksContr
     }
 
     @Override
-    public void onDialogPositiveClick(String title, Date dateTime, boolean isNotifEnabled) {
-        mPresenter.insertTask(title, dateTime, isNotifEnabled);
+    public void onDialogPositiveClick(long id, String title, Date dateTime, boolean isNotifEnabled) {
+        //mPresenter.insertTask(title, dateTime, isNotifEnabled);
+        mPresenter.onOkClicked(id, title, dateTime, isNotifEnabled);
     }
 
     @Override

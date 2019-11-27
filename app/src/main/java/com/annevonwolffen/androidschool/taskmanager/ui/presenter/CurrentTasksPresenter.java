@@ -40,6 +40,10 @@ public class CurrentTasksPresenter implements ICurrentTasksContract.IPresenter,
         mRepository.insertTask(new Task(title, dateTime, isNotifEnabled), this);
     }
 
+    private void updateTask(long id, String title, Date dateTime, boolean isNotifEnabled) {
+        mRepository.updateTask(new Task(id, title, dateTime, isNotifEnabled), this);
+    }
+
     @Override
     public void deleteTask() {
         mRepository.deleteTask(mReadyToDeleteTask, this);
@@ -62,11 +66,23 @@ public class CurrentTasksPresenter implements ICurrentTasksContract.IPresenter,
     }
 
     @Override
+    public void onOkClicked(long id, String title, Date dateTime, boolean isNotifEnabled) {
+        if (id == -1) {
+            // insert
+            insertTask(title, dateTime, isNotifEnabled);
+        } else {
+            // update
+            updateTask(id, title, dateTime, isNotifEnabled);
+        }
+    }
+
+    @Override
     public void onBindTaskRowViewAtPosition(int position, ICurrentTasksContract.ICurrentTaskRow taskRow) {
         Task task = mCurrentTasks.get(position);
         taskRow.setTaskTitle(task.getTitle());
         taskRow.setTaskDateTime(dateToString(task.getDateTo()));
         taskRow.setOnLongClickListener(position);
+        taskRow.setOnClickItemListener(position);
         //todo: set icons
     }
 
@@ -78,6 +94,12 @@ public class CurrentTasksPresenter implements ICurrentTasksContract.IPresenter,
     @Override
     public void onLongClick(int position) {
         mView.openDeletingDialog(position);
+    }
+
+    @Override
+    public void onItemClick(int position) {
+        Task task = mCurrentTasks.get(position);
+        mView.openUpdateDialog(task.getId(),task.getTitle(), dateToString(task.getDateTo()), task.isNotifAdded());
     }
 
     @Override
