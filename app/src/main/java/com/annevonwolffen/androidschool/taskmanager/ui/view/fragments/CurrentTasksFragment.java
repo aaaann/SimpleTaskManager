@@ -151,6 +151,7 @@ public class CurrentTasksFragment extends Fragment implements ICurrentTasksContr
 
     @Override
     public void onDialogPositiveClick(long id, String title, Date dateTime, boolean isNotifEnabled) {
+        Log.d(TAG, "onDialogPositiveClick() called with: id = [" + id + "], title = [" + title + "], dateTime = [" + dateTime + "], isNotifEnabled = [" + isNotifEnabled + "]");
         //mPresenter.insertTask(title, dateTime, isNotifEnabled);
         mPresenter.onOkClicked(id, title, dateTime, isNotifEnabled);
     }

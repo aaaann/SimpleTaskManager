@@ -16,7 +16,8 @@ public class CurrentTasksPresenter implements ICurrentTasksContract.IPresenter,
     private final TaskRepository mRepository;
     private final ICurrentTasksContract.IView mView;
     private List<Task> mCurrentTasks = new ArrayList<>();
-    private Task mReadyToDeleteTask;
+    private Task mToDeleteTask;
+    private Task mToUpdateTask;
 
     public CurrentTasksPresenter(ICurrentTasksContract.IView view, TaskRepository repository) { // todo: remove context from presenter, create repository in view (fragment)
         mView = view;
@@ -41,25 +42,28 @@ public class CurrentTasksPresenter implements ICurrentTasksContract.IPresenter,
     }
 
     private void updateTask(long id, String title, Date dateTime, boolean isNotifEnabled) {
-        mRepository.updateTask(new Task(id, title, dateTime, isNotifEnabled), this);
+        mToUpdateTask.setTitle(title);
+        mToUpdateTask.setDateTo(dateTime);
+        mToUpdateTask.setIsNotifAdded(isNotifEnabled);
+        mRepository.updateTask(mToUpdateTask, this);
     }
 
     @Override
     public void deleteTask() {
-        mRepository.deleteTask(mReadyToDeleteTask, this);
+        mRepository.deleteTask(mToDeleteTask, this);
     }
 
     @Override
     public void onDeleteCancel() {
-        mCurrentTasks.add(mReadyToDeleteTask);
-        mReadyToDeleteTask = null;
+        mCurrentTasks.add(mToDeleteTask);
+        mToDeleteTask = null;
         mView.showData();
     }
 
     @Override
     public void onDelete(int position) {
         Task task = mCurrentTasks.get(position);
-        mReadyToDeleteTask = task;
+        mToDeleteTask = task;
         mCurrentTasks.remove(task);
         mView.showData();
         mView.showSnackbar();
@@ -98,8 +102,8 @@ public class CurrentTasksPresenter implements ICurrentTasksContract.IPresenter,
 
     @Override
     public void onItemClick(int position) {
-        Task task = mCurrentTasks.get(position);
-        mView.openUpdateDialog(task.getId(),task.getTitle(), dateToString(task.getDateTo()), task.isNotifAdded());
+        mToUpdateTask = mCurrentTasks.get(position);
+        mView.openUpdateDialog(mToUpdateTask.getId(),mToUpdateTask.getTitle(), dateToString(mToUpdateTask.getDateTo()), mToUpdateTask.isNotifAdded());
     }
 
     @Override
@@ -122,6 +126,7 @@ public class CurrentTasksPresenter implements ICurrentTasksContract.IPresenter,
     public void onFinish(int count, Task task) {
         if (count == 1) {
             mView.showData();
+            mToUpdateTask = null;
         }
     }
 }

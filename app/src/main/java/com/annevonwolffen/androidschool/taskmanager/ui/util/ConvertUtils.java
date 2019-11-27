@@ -1,5 +1,7 @@
 package com.annevonwolffen.androidschool.taskmanager.ui.util;
 
+import android.util.Log;
+
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -24,7 +26,7 @@ public class ConvertUtils {
 
     public static int[] intDateFromStringDate(String dateTime) {
         String date = dateTime.substring(0, dateTime.indexOf(" "));
-        String[] aDate = date.split(".");
+        String[] aDate = date.split("\\.");
         return new int[]{Integer.parseInt(aDate[0]), Integer.parseInt(aDate[1]), Integer.parseInt(aDate[2])};
     }
 
