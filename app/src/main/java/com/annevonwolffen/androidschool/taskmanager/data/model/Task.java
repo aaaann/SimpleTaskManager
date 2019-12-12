@@ -1,6 +1,5 @@
 package com.annevonwolffen.androidschool.taskmanager.data.model;
 
-import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.Ignore;
@@ -41,6 +40,9 @@ public class Task {
     @ColumnInfo(name = "is_done", defaultValue = "false")
     private boolean mIsDone;
 
+    @ColumnInfo(name = "is_deleted", defaultValue = "false")
+    private boolean mIsDeleted;
+
     @ColumnInfo(name = "is_notif_added", defaultValue = "true")
     private boolean mIsNotifAdded;
 
@@ -74,6 +76,14 @@ public class Task {
 
     public void setIsDone(boolean isDone) {
         this.mIsDone = isDone;
+    }
+
+    public boolean isDeleted() {
+        return mIsDeleted;
+    }
+
+    public void setIsDeleted(boolean isDeleted) {
+        mIsDeleted = isDeleted;
     }
 
     public boolean isNotifAdded() {

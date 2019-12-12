@@ -14,11 +14,14 @@ import java.util.List;
 @Dao
 public interface TaskDao {
 
-    @Query("select * from Task where is_done = 1")
+    @Query("select * from Task where is_done = 1 and is_deleted = 0")
     List<Task> findAllByIsDone();
 
-    @Query("select * from Task where is_done = 0")
+    @Query("select * from Task where is_done = 0 and is_deleted = 0")
     List<Task> findAllByNotIsDone();
+
+    @Query("select * from Task where id = :id")
+    Task findById(Long id);
 
     @Insert
     long insert(Task task);
@@ -26,6 +29,9 @@ public interface TaskDao {
     @Update
     int update(Task task);
 
-    @Delete
-    int delete(Task task);
+    @Query("update Task set is_deleted = 0 where is_deleted = 1")
+    int unmarkIsDeleted();
+
+    @Query("delete from Task where is_deleted = 1")
+    int delete();
 }

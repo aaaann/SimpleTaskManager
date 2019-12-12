@@ -3,7 +3,6 @@ package com.annevonwolffen.androidschool.taskmanager.ui.view.adapters;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -11,13 +10,18 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.annevonwolffen.androidschool.taskmanager.R;
-import com.annevonwolffen.androidschool.taskmanager.ui.contract.ICurrentTasksContract;
+import com.annevonwolffen.androidschool.taskmanager.data.model.Task;
+import com.annevonwolffen.androidschool.taskmanager.ui.contract.IBaseContract;
 
-public class CurrentTasksAdapter extends RecyclerView.Adapter<CurrentTasksAdapter.CurrentTaskViewHolder> {
+import java.util.ArrayList;
+import java.util.List;
 
-    private ICurrentTasksContract.IPresenter mPresenter;
+public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.CurrentTaskViewHolder> {
 
-    public CurrentTasksAdapter(ICurrentTasksContract.IPresenter presenter) {
+    private final IBaseContract.IBasePresenter mPresenter;
+    private List<Task> mCurrentTasks = new ArrayList<>();
+
+    public TasksAdapter(IBaseContract.IBasePresenter presenter) {
         mPresenter = presenter;
     }
 
@@ -32,24 +36,28 @@ public class CurrentTasksAdapter extends RecyclerView.Adapter<CurrentTasksAdapte
 
     @Override
     public void onBindViewHolder(@NonNull CurrentTaskViewHolder holder, int position) {
-        mPresenter.onBindTaskRowViewAtPosition(position, holder);
+        mPresenter.onBindTaskRowViewAtPosition(mCurrentTasks.get(position), holder);
+    }
+
+    public void setTasks(List<Task> tasks) {
+        mCurrentTasks = tasks;
     }
 
     @Override
     public int getItemCount() {
-        return mPresenter.getTasksRowsCount();
+        return mCurrentTasks.size();
     }
 
-    static class CurrentTaskViewHolder extends RecyclerView.ViewHolder implements ICurrentTasksContract.ICurrentTaskRow {
+    static class CurrentTaskViewHolder extends RecyclerView.ViewHolder implements IBaseContract.IBaseTaskRow {
 
         private ImageView mIcon;
         private TextView mTitle;
         private TextView mDate;
         private ImageView mNotificationIcon;
         private View mView;
-        private final ICurrentTasksContract.IPresenter mPresenter;
+        private final IBaseContract.IBasePresenter mPresenter;
 
-        public CurrentTaskViewHolder(@NonNull View itemView, ICurrentTasksContract.IPresenter presenter) {
+        public CurrentTaskViewHolder(@NonNull View itemView, IBaseContract.IBasePresenter presenter) {
             super(itemView);
 
             mIcon = itemView.findViewById(R.id.iv_icon);
@@ -82,16 +90,16 @@ public class CurrentTasksAdapter extends RecyclerView.Adapter<CurrentTasksAdapte
         }
 
         @Override
-        public void setOnLongClickListener(final int position) {
+        public void setOnLongClickListener(Task task) {
             mView.setOnLongClickListener(v -> {
-                mPresenter.onLongClick(position);
+                mPresenter.onLongClick(task);
                 return true;
             });
         }
 
         @Override
-        public void setOnClickItemListener(int position) {
-            mView.setOnClickListener(v -> mPresenter.onItemClick(position));
+        public void setOnClickItemListener(Task task) {
+            mView.setOnClickListener(v -> mPresenter.onItemClick(task));
         }
     }
 }

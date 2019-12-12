@@ -1,15 +1,18 @@
 package com.annevonwolffen.androidschool.taskmanager.data.repository;
 
 import android.content.Context;
-import android.os.AsyncTask;
-
-import androidx.lifecycle.LiveData;
 
 import com.annevonwolffen.androidschool.taskmanager.data.database.TaskDao;
 import com.annevonwolffen.androidschool.taskmanager.data.database.TasksDb;
 import com.annevonwolffen.androidschool.taskmanager.data.model.Task;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 /**
  * Класс для обращения к методам DAO
@@ -17,88 +20,144 @@ import java.util.List;
 public class TaskRepository {
 
     private final TaskDao mTaskDao;
+    private final ExecutorService mExecutor;
 
 
     public TaskRepository(Context context) {
         TasksDb tasksDb = TasksDb.getDatabaseInstance(context);
         mTaskDao = tasksDb.taskDao();
+        mExecutor = Executors.newSingleThreadExecutor();
     }
 
-    public void getAllTasksByDone(final boolean isDone, final OnDbOperationListener listener) {
-        new AsyncTask<Void, Void, List<Task>>() {
-            @Override
-            protected List<Task> doInBackground(Void... voids) {
-                if (isDone)
+    public List<Task> getAllTasksByDone(boolean isDone) {
+        List<Task> tasks  = Collections.emptyList();
+        Future<List<Task>> fTasks = mExecutor.submit(new GetCallable(isDone));
+        try {
+            tasks = fTasks.get();
+        } catch (ExecutionException | InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        return Collections.unmodifiableList(tasks);
+    }
+
+    public Task getTaskById(long id) {
+        Future<Task> fTask = mExecutor.submit(new GetOneCallable(id));
+        try {
+            return fTask.get();
+        } catch (ExecutionException | InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+
+    public long insertTask(Task task) {
+        Future<Long> fId = mExecutor.submit(new InsertCallable(task));
+        try {
+            return fId.get();
+        } catch (ExecutionException | InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        return -1;
+    }
+
+    public int updateTask(Task task) {
+        Future<Integer> fCount = mExecutor.submit(new UpdateCallable(task));
+        try {
+            return fCount.get();
+        } catch (ExecutionException | InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        return 0;
+    }
+
+    public int processToDeleteTask(boolean toDelete) {
+        Future<Integer> fCount = mExecutor.submit(new DeleteCallable(toDelete));
+        try {
+            return fCount.get();
+        } catch (ExecutionException | InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        return 0;
+    }
+
+    private class GetCallable implements Callable<List<Task>> {
+        private boolean mIsDone;
+
+        public GetCallable(boolean isDone) {
+            mIsDone = isDone;
+        }
+
+        @Override
+        public List<Task> call() {
+
+            if (mIsDone)
                     return mTaskDao.findAllByIsDone();
                 else
                     return mTaskDao.findAllByNotIsDone();
-            }
+        }
+    }
 
-            @Override
-            protected void onPostExecute(List<Task> tasks) {
-                super.onPostExecute(tasks);
+    private class GetOneCallable implements Callable<Task> {
+        private long mId;
 
-                listener.onFinish(tasks);
+        public GetOneCallable(long id) {
+            mId = id;
+        }
+
+        @Override
+        public Task call() {
+            return mTaskDao.findById(mId);
+        }
+    }
+
+    private class InsertCallable implements Callable<Long> {
+        private Task mTask;
+
+        public InsertCallable(Task task) {
+            mTask = task;
+        }
+
+        @Override
+        public Long call() {
+            return mTaskDao.insert(mTask);
+        }
+    }
+
+    private class UpdateCallable implements Callable<Integer> {
+        private Task mTask;
+
+        public UpdateCallable(Task task) {
+            mTask = task;
+        }
+
+        @Override
+        public Integer call() {
+            return mTaskDao.update(mTask);
+        }
+    }
+
+    private class DeleteCallable implements Callable<Integer> {
+        private boolean mToDelete;
+
+        public DeleteCallable(boolean toDelete) {
+            this.mToDelete = toDelete;
+        }
+
+        @Override
+        public Integer call() {
+            if (mToDelete) {
+                return mTaskDao.delete();
+            } else {
+                return mTaskDao.unmarkIsDeleted();
             }
-        }.execute();
+        }
     }
 
 
-    public void insertTask(final Task task, final OnDbOperationListener listener) {
-        new AsyncTask<Void, Void, Long>() {
-
-            @Override
-            protected Long doInBackground(Void... voids) {
-                return mTaskDao.insert(task);
-            }
-
-            @Override
-            protected void onPostExecute(Long id) {
-                super.onPostExecute(id);
-
-                listener.onFinish(id, task);
-            }
-        }.execute();
-    }
-
-    public void updateTask(final Task task, final OnDbOperationListener listener) {
-        new AsyncTask<Void, Void, Integer>() {
-            @Override
-            protected Integer doInBackground(Void... voids) {
-                return mTaskDao.update(task);
-            }
-
-            @Override
-            protected void onPostExecute(Integer count) {
-                super.onPostExecute(count);
-
-                listener.onFinish(count, task);
-            }
-        }.execute();
-    }
-
-    public void deleteTask(final Task task, final OnDbOperationListener listener) {
-        new AsyncTask<Void, Void, Integer>() {
-            @Override
-            protected Integer doInBackground(Void... voids) {
-                return mTaskDao.delete(task);
-            }
-
-            @Override
-            protected void onPostExecute(Integer count) {
-                super.onPostExecute(count);
-
-                listener.onFinish(count, task);
-            }
-        }.execute();
-    }
-
-
-    public interface OnDbOperationListener {
-        void onFinish(List<Task> tasks);
-
-        void onFinish(long id, Task task);
-
-        void onFinish(int count, Task task);
-    }
 }
