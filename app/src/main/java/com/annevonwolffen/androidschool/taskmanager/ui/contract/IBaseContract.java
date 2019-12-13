@@ -23,6 +23,8 @@ public interface IBaseContract {
         void onBindTaskRowViewAtPosition(Task task, IBaseTaskRow taskRow);
         void onLongClick(Task task);
         void onItemClick(Task task);
+        void onIconClick(Task task, IBaseContract.IBaseTaskRow taskRow);
+        void onAnimationEnd();
     }
 
     interface IBaseTaskRow {
@@ -32,5 +34,7 @@ public interface IBaseContract {
         void setNotificationIcon(int color);
         void setOnLongClickListener(Task task);
         void setOnClickItemListener(Task task);
+        void setOnIconClickListener(Task task);
+        void animateMove();
     }
 }

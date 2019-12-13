@@ -34,4 +34,14 @@ public class DoneTasksPresenter extends BaseTasksPresenter<IBaseContract.IBaseVi
     public void onItemClick(Task task) {
 
     }
+
+    @Override
+    public void onIconClick(Task task, IBaseContract.IBaseTaskRow taskView) {
+
+    }
+
+    @Override
+    public void onAnimationEnd() {
+
+    }
 }
