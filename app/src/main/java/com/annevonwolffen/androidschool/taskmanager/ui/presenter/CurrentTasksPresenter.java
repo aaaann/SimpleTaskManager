@@ -99,9 +99,9 @@ public class CurrentTasksPresenter extends BaseTasksPresenter<ICurrentTasksContr
     @Override
     public void onIconClick(Task task, IBaseContract.IBaseTaskRow taskView) {
 //        if (task.getDateTo().after(new Date())) {
-            task.setIsDone(true);
-            mRepository.updateTask(task);
-            taskView.animateMove(true);
+        task.setIsDone(true);
+        mRepository.updateTask(task);
+        taskView.animateMove(true);
 //        }
     }
 

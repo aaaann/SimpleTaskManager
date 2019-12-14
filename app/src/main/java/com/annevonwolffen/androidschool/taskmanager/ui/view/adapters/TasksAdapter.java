@@ -137,7 +137,6 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.CurrentTaskV
                     translationX.addListener(new Animator.AnimatorListener() {
                         @Override
                         public void onAnimationStart(Animator animator) {
-
                         }
 
                         @Override
@@ -178,5 +177,4 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.CurrentTaskV
             flipIn.start();
         }
     }
-
 }
