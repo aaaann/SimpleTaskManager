@@ -46,4 +46,8 @@ public class TabAdapter extends FragmentPagerAdapter {
         }
         return CurrentTasksFragment.PAGE_TITLE;
     }
+
+
+
+
 }

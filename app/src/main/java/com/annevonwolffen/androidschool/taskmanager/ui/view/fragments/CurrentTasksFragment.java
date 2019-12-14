@@ -15,10 +15,8 @@ import com.annevonwolffen.androidschool.taskmanager.R;
 import com.annevonwolffen.androidschool.taskmanager.data.repository.TaskRepository;
 import com.annevonwolffen.androidschool.taskmanager.ui.contract.ICurrentTasksContract;
 import com.annevonwolffen.androidschool.taskmanager.ui.presenter.CurrentTasksPresenter;
-import com.annevonwolffen.androidschool.taskmanager.ui.view.adapters.TasksAdapter;
 import com.annevonwolffen.androidschool.taskmanager.ui.view.dialogfragments.AddTaskDialogFragment;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
 
 import java.util.Date;
 
@@ -28,9 +26,6 @@ public class CurrentTasksFragment extends BaseTaskFragment<ICurrentTasksContract
     private static final String DIALOG_TAG = "AddTaskDialogFragment";
     private static final String TAG = "CurrentTasksFragment";
     private static final int FRAGMENT_TAG = 0;
-
-    private TasksAdapter mAdapter;
-    private Snackbar mSnackbar;
 
     public CurrentTasksFragment() {
         super(R.layout.fragment_current_tasks);

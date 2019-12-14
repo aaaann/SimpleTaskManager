@@ -4,6 +4,8 @@ import com.annevonwolffen.androidschool.taskmanager.data.model.Task;
 import com.annevonwolffen.androidschool.taskmanager.data.repository.TaskRepository;
 import com.annevonwolffen.androidschool.taskmanager.ui.contract.IBaseContract;
 
+import java.util.Date;
+
 public class DoneTasksPresenter extends BaseTasksPresenter<IBaseContract.IBaseView> implements IBaseContract.IBasePresenter{
 
     public DoneTasksPresenter(IBaseContract.IBaseView view, TaskRepository repository) {
@@ -37,11 +39,15 @@ public class DoneTasksPresenter extends BaseTasksPresenter<IBaseContract.IBaseVi
 
     @Override
     public void onIconClick(Task task, IBaseContract.IBaseTaskRow taskView) {
-
+        if (task.getDateTo().after(new Date())) {
+            task.setIsDone(false);
+            mRepository.updateTask(task);
+            taskView.animateMove(false);
+        }
     }
 
     @Override
     public void onAnimationEnd() {
-
+        mView.showData(mRepository.getAllTasksByDone(true));
     }
 }

@@ -7,10 +7,12 @@ import com.annevonwolffen.androidschool.taskmanager.data.model.Task;
 import java.util.List;
 
 public interface IBaseContract {
+
     interface IBaseView {
         void showData(List<Task> tasks);
         void openDeletingDialog(Task task);
         void showSnackbar();
+        void refreshTabFragment();
     }
 
     interface IBasePresenter<V extends IBaseView> {
@@ -35,6 +37,6 @@ public interface IBaseContract {
         void setOnLongClickListener(Task task);
         void setOnClickItemListener(Task task);
         void setOnIconClickListener(Task task);
-        void animateMove();
+        void animateMove(boolean animateForward);
     }
 }

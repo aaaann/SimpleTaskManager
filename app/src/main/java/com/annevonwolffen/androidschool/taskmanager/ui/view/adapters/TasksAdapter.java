@@ -46,12 +46,13 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.CurrentTaskV
         mCurrentTasks = tasks;
     }
 
+
     @Override
     public int getItemCount() {
         return mCurrentTasks.size();
     }
 
-    static class CurrentTaskViewHolder extends RecyclerView.ViewHolder implements IBaseContract.IBaseTaskRow {
+    class CurrentTaskViewHolder extends RecyclerView.ViewHolder implements IBaseContract.IBaseTaskRow {
 
         private ImageView mIcon;
         private TextView mTitle;
@@ -107,18 +108,15 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.CurrentTaskV
 
         @Override
         public void setOnIconClickListener(Task task) {
-            mIcon.setOnClickListener(v -> {
-                mPresenter.onIconClick(task, this);
-            });
+            mIcon.setOnClickListener(v -> mPresenter.onIconClick(task, this));
         }
 
         @Override
-        public void animateMove() {
+        public void animateMove(boolean moveForward) {
             //добавляем анимацию - поворот картинке вокруг вертикальной оси
             ObjectAnimator flipIn = ObjectAnimator.ofFloat(mIcon,
                     "rotationY",
                     -180f, 0f);
-            //присваиваем аниматору слушателя
             flipIn.addListener(new Animator.AnimatorListener() {
                 @Override
                 public void onAnimationStart(Animator animator) {
@@ -127,45 +125,44 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.CurrentTaskV
 
                 @Override
                 public void onAnimationEnd(Animator animator) {
-                        //аниматор, который передвигает элемент списка по горизонтали
-                        //на величину равную его длине
-                        //таким образом, он исчезает из поля зрения
-                        ObjectAnimator translationX = ObjectAnimator.ofFloat(itemView,
-                                "translationX", 0f, itemView.getWidth());
-                        //другой аниматор, возвращающий элемент списка в исходное состояние
-                        ObjectAnimator translationXBack = ObjectAnimator.ofFloat(itemView,
-                                "translationX", itemView.getWidth(), 0f);
+                    //аниматор, который передвигает элемент списка по горизонтали
+                    //на величину равную его длине
+                    //таким образом, он исчезает из поля зрения
+                    ObjectAnimator translationX = ObjectAnimator.ofFloat(itemView,
+                            "translationX", 0f, moveForward ? itemView.getWidth() : -itemView.getWidth());
+                    //другой аниматор, возвращающий элемент списка в исходное состояние
+                    ObjectAnimator translationXBack = ObjectAnimator.ofFloat(itemView,
+                            "translationX", moveForward ? itemView.getWidth() : -itemView.getWidth(), 0f);
 
-                        //добавим слушателя
-                        translationX.addListener(new Animator.AnimatorListener() {
-                            @Override
-                            public void onAnimationStart(Animator animator) {
+                    translationX.addListener(new Animator.AnimatorListener() {
+                        @Override
+                        public void onAnimationStart(Animator animator) {
 
-                            }
+                        }
 
-                            @Override
-                            public void onAnimationEnd(Animator animator) {
-                                //делаем элемент невидимым, чтобы он не отображался после удаления
-                                //itemView.setVisibility(View.GONE);
-                                mPresenter.onAnimationEnd();
-                            }
+                        @Override
+                        public void onAnimationEnd(Animator animator) {
+                            //делаем элемент невидимым, чтобы он не отображался после удаления
+//                            itemView.setVisibility(View.GONE);
+                            mPresenter.onAnimationEnd();
 
-                            @Override
-                            public void onAnimationCancel(Animator animator) {
+                        }
 
-                            }
+                        @Override
+                        public void onAnimationCancel(Animator animator) {
 
-                            @Override
-                            public void onAnimationRepeat(Animator animator) {
+                        }
 
-                            }
-                        });
+                        @Override
+                        public void onAnimationRepeat(Animator animator) {
 
-                        //создадим аниматорсет для запуска анимации в определенной последовательности
-                        AnimatorSet translationSet = new AnimatorSet();
-                        translationSet.play(translationX).before(translationXBack);
-                        translationSet.start();
-                    }
+                        }
+                    });
+
+                    AnimatorSet translationSet = new AnimatorSet();
+                    translationSet.play(translationX).before(translationXBack);
+                    translationSet.start();
+                }
 
                 @Override
                 public void onAnimationCancel(Animator animator) {
@@ -178,8 +175,8 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.CurrentTaskV
                 }
             });
 
-            //вызов старта анимации
             flipIn.start();
         }
     }
+
 }
