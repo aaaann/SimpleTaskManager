@@ -19,6 +19,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <!-- Register the Alarm Receiver -->
+        <receiver android:name=".ui.alarm.AlarmReceiver"/>
     </application>
 
 </manifest>

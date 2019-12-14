@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 
 import com.annevonwolffen.androidschool.taskmanager.data.model.Task;
 import com.annevonwolffen.androidschool.taskmanager.data.repository.TaskRepository;
+import com.annevonwolffen.androidschool.taskmanager.ui.alarm.NotificationScheduler;
 import com.annevonwolffen.androidschool.taskmanager.ui.contract.IBaseContract;
 
 import static com.annevonwolffen.androidschool.taskmanager.ui.util.ConvertUtils.dateToString;
@@ -12,10 +13,12 @@ public abstract class BaseTasksPresenter<T extends IBaseContract.IBaseView> impl
 
     protected final TaskRepository mRepository;
     protected T mView;
+    protected NotificationScheduler mNotificationScheduler;
 
     public BaseTasksPresenter(TaskRepository repository, T view) {
         mRepository = repository;
         mView = view;
+        mNotificationScheduler = NotificationScheduler.getInstance();
     }
 
     @Override
@@ -29,8 +32,13 @@ public abstract class BaseTasksPresenter<T extends IBaseContract.IBaseView> impl
     }
 
 
+    /**
+     * окончательное удаление таски из базы
+     */
     @Override
     public void onSnackbarDismissed() {
+        Task task = mRepository.getDeletedTask();
+        mNotificationScheduler.removeAlarm(task.getDateTo());
         mRepository.processToDeleteTask(true);
     }
 

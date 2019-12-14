@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 
 import com.annevonwolffen.androidschool.taskmanager.R;
+import com.annevonwolffen.androidschool.taskmanager.ui.alarm.NotificationScheduler;
 import com.annevonwolffen.androidschool.taskmanager.ui.view.adapters.TabAdapter;
 import com.google.android.material.tabs.TabLayout;
 
@@ -26,6 +27,8 @@ public class TasksFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View root = super.onCreateView(inflater, container, savedInstanceState);
+
+        NotificationScheduler.getInstance().init(requireContext());
 
         mTabAdapter = new TabAdapter(getFragmentManager(), 2);
         ViewPager viewPager = root.findViewById(R.id.pager);

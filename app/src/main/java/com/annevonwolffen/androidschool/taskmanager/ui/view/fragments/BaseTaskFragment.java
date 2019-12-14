@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.annevonwolffen.androidschool.taskmanager.R;
 import com.annevonwolffen.androidschool.taskmanager.data.model.Task;
+import com.annevonwolffen.androidschool.taskmanager.ui.alarm.NotificationScheduler;
 import com.annevonwolffen.androidschool.taskmanager.ui.contract.IBaseContract;
 import com.annevonwolffen.androidschool.taskmanager.ui.view.adapters.TasksAdapter;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
@@ -28,6 +29,7 @@ public abstract class BaseTaskFragment<T extends IBaseContract.IBasePresenter> e
 
     public BaseTaskFragment(@LayoutRes int contentLayoutId) {
         super(contentLayoutId);
+//        NotificationScheduler.getInstance().init(requireContext());
     }
 
 

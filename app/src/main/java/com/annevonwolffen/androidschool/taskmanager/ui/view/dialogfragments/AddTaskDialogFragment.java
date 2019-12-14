@@ -86,7 +86,6 @@ public class AddTaskDialogFragment extends DialogFragment {
         final StringBuilder date = new StringBuilder();
         final StringBuilder time = new StringBuilder();
         final DatePicker taskDate = root.findViewById(R.id.date_picker);
-        //Calendar calendar = Calendar.getInstance();
         taskDate.init(getInitDataForDatePicker()[2], getInitDataForDatePicker()[1], getInitDataForDatePicker()[0], (view, year, monthOfYear, dayOfMonth) -> {
             date.setLength(0);
             date.append(defineDate(year, monthOfYear, dayOfMonth));
@@ -107,7 +106,7 @@ public class AddTaskDialogFragment extends DialogFragment {
                 .setPositiveButton("ОК", (dialog, which) -> {
 
                     String title = etTitle.getText().toString();
-                    boolean isNotifEnabled = chbxAddNotification.isEnabled();
+                    boolean isNotifEnabled = chbxAddNotification.isChecked();
                     String dateTime = date.toString() + " " + time.toString();
                     addDialogListener.onDialogPositiveClick(getArguments() != null ? getArguments().getLong(ARG_ID) : -1, title, stringToDate(dateTime), isNotifEnabled);
                     dialog.dismiss();
@@ -172,7 +171,8 @@ public class AddTaskDialogFragment extends DialogFragment {
 
     private int[] getInitDataForDatePicker() {
         if (getArguments() != null) {
-            return intDateFromStringDate(getArguments().getString(ARG_DATE));
+            int[] aDate = intDateFromStringDate(getArguments().getString(ARG_DATE));
+            return new int[] {aDate[0], aDate[1] - 1, aDate[2]};
         } else {
             Calendar calendar = Calendar.getInstance();
             return new int[] {calendar.get(Calendar.DAY_OF_MONTH), calendar.get(Calendar.MONTH), calendar.get(Calendar.YEAR)};

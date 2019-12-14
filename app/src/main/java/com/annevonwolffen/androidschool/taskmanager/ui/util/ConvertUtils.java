@@ -1,7 +1,5 @@
 package com.annevonwolffen.androidschool.taskmanager.ui.util;
 
-import android.util.Log;
-
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -33,6 +31,6 @@ public class ConvertUtils {
     public static int[] intTimeFromStringDate(String dateTime) {
         String time = dateTime.substring(dateTime.indexOf(" ") + 1);
         String[] aTime = time.split(":");
-        return new int[]{Integer.parseInt(aTime[0]), Integer.parseInt(aTime[0])};
+        return new int[]{Integer.parseInt(aTime[0]), Integer.parseInt(aTime[1])};
     }
 }

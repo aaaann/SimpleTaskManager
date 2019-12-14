@@ -40,16 +40,24 @@ public class CurrentTasksPresenter extends BaseTasksPresenter<ICurrentTasksContr
     @Override
     public void insertTask(String title, Date dateTime, boolean isNotifEnabled) {
         if (mRepository.insertTask(new Task(title, dateTime, isNotifEnabled)) != -1) {
+            if (isNotifEnabled) {
+                mNotificationScheduler.setAlarm(title, dateTime);
+            }
             mView.showData(mRepository.getAllTasksByDone(false));
         }
     }
 
     private void updateTask(long id, String title, Date dateTime, boolean isNotifEnabled) {
         Task task = mRepository.getTaskById(id);
+        Date prevDate = task.getDateTo();
         task.setTitle(title);
         task.setDateTo(dateTime);
         task.setIsNotifAdded(isNotifEnabled);
         if (mRepository.updateTask(task) > 0) {
+            mNotificationScheduler.removeAlarm(prevDate);
+            if (isNotifEnabled) {
+                mNotificationScheduler.setAlarm(title, dateTime);
+            }
             mView.showData(mRepository.getAllTasksByDone(false));
         }
     }
@@ -79,17 +87,6 @@ public class CurrentTasksPresenter extends BaseTasksPresenter<ICurrentTasksContr
             updateTask(id, title, dateTime, isNotifEnabled);
         }
     }
-
-
-//    @Override
-//    public void onBindTaskRowViewAtPosition(Task task, IBaseContract.IBaseTaskRow taskRow) {
-//        taskRow.setTaskTitle(task.getTitle());
-//        taskRow.setTaskDateTime(dateToString(task.getDateTo()));
-//        taskRow.setOnLongClickListener(task);
-//        taskRow.setOnClickItemListener(task);
-//        //todo: set icons
-//    }
-
 
     @Override
     public void onItemClick(Task task) {
