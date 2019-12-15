@@ -53,15 +53,21 @@ public class NotificationScheduler {
         // todo: parameters take from sharedPreferences
         Date notification1Date =  substractDays(date, 1);// за день
         Date notification2Date = substractHours(date, 1); // за час
-        Date notification3Date = substractMinutes(date, 2); // за 10 мин
+        Date notification3Date = substractMinutes(date, 10); // за 10 мин
         if (new Date().before(notification1Date)) {
-            mAlarmManager.set(AlarmManager.RTC_WAKEUP, notification1Date.getTime(), pendingIntent);
+            PendingIntent pendingIntent1 = PendingIntent.getBroadcast(mContext,
+                    (int) notification1Date.getTime(), intent, PendingIntent.FLAG_UPDATE_CURRENT);
+            mAlarmManager.set(AlarmManager.RTC_WAKEUP, notification1Date.getTime(), pendingIntent1);
         }
         if (new Date().before(notification2Date)) {
-            mAlarmManager.set(AlarmManager.RTC_WAKEUP, notification2Date.getTime(), pendingIntent);
+            PendingIntent pendingIntent2 = PendingIntent.getBroadcast(mContext,
+                    (int) notification2Date.getTime(), intent, PendingIntent.FLAG_UPDATE_CURRENT);
+            mAlarmManager.set(AlarmManager.RTC_WAKEUP, notification2Date.getTime(), pendingIntent2);
         }
         if (new Date().before(notification3Date)) {
-            mAlarmManager.set(AlarmManager.RTC_WAKEUP, notification3Date.getTime(), pendingIntent);
+            PendingIntent pendingIntent3 = PendingIntent.getBroadcast(mContext,
+                    (int) notification3Date.getTime(), intent, PendingIntent.FLAG_UPDATE_CURRENT);
+            mAlarmManager.set(AlarmManager.RTC_WAKEUP, notification3Date.getTime(), pendingIntent3);
         }
         mAlarmManager.set(AlarmManager.RTC_WAKEUP, date.getTime(), pendingIntent);
     }
@@ -80,8 +86,16 @@ public class NotificationScheduler {
 
         PendingIntent pendingIntent = PendingIntent.getBroadcast(mContext, (int) date.getTime(),
                 intent, PendingIntent.FLAG_UPDATE_CURRENT);
-
+        PendingIntent pendingIntent1 = PendingIntent.getBroadcast(mContext, (int) substractDays(date, 1).getTime(),
+                intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent pendingIntent2 = PendingIntent.getBroadcast(mContext, (int) substractHours(date, 1).getTime(),
+                intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent pendingIntent3 = PendingIntent.getBroadcast(mContext, (int) substractMinutes(date, 10).getTime(),
+                intent, PendingIntent.FLAG_UPDATE_CURRENT);
         //отменяем оповещение
+        mAlarmManager.cancel(pendingIntent1);
+        mAlarmManager.cancel(pendingIntent2);
+        mAlarmManager.cancel(pendingIntent3);
         mAlarmManager.cancel(pendingIntent);
     }
 
