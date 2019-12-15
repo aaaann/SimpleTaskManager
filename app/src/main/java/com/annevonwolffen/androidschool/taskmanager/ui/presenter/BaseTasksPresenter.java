@@ -45,16 +45,6 @@ public abstract class BaseTasksPresenter<T extends IBaseContract.IBaseView> impl
     }
 
     @Override
-    public void onBindTaskRowViewAtPosition(Task task, IBaseContract.IBaseTaskRow taskRow) {
-        taskRow.setTaskTitle(task.getDateTo().before(new Date()) ? task.getTitle() + "!!!OVERDUE!!!" : task.getTitle());
-        taskRow.setTaskDateTime(dateToString(task.getDateTo()));
-        taskRow.setOnLongClickListener(task);
-        taskRow.setOnClickItemListener(task);
-        taskRow.setOnIconClickListener(task);
-        //todo: set icons
-    }
-
-    @Override
     public void onLongClick(Task task) {
         mView.openDeletingDialog(task);
     }

@@ -11,17 +11,17 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
 
 import com.annevonwolffen.androidschool.taskmanager.R;
+import com.annevonwolffen.androidschool.taskmanager.data.model.Task;
 import com.annevonwolffen.androidschool.taskmanager.data.repository.TaskRepository;
 import com.annevonwolffen.androidschool.taskmanager.ui.alarm.AlarmReceiver;
 import com.annevonwolffen.androidschool.taskmanager.ui.contract.ICurrentTasksContract;
 import com.annevonwolffen.androidschool.taskmanager.ui.presenter.CurrentTasksPresenter;
-import com.annevonwolffen.androidschool.taskmanager.ui.view.adapters.TasksAdapter;
 import com.annevonwolffen.androidschool.taskmanager.ui.view.dialogfragments.AddTaskDialogFragment;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
 
 import java.util.Date;
 
@@ -92,6 +92,18 @@ public class CurrentTasksFragment extends BaseTaskFragment<ICurrentTasksContract
     }
 
     @Override
+    public void openMultipleChoiceDialog(Task task) {
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(requireContext());
+        dialogBuilder.setMessage("Задача просрочена... :(");
+
+        dialogBuilder.setNeutralButton("Редактировать", (dialog, which) -> mPresenter.onEditDialogBtnClick(task));
+        dialogBuilder.setPositiveButton("Сделано", (dialog, which) -> mPresenter.onDoneDialogBtnClick(task));
+        dialogBuilder.setNegativeButton("Не сделано", (dialog, which) -> mPresenter.onOverdueDialogBtnClick(task));
+        AlertDialog dialog = dialogBuilder.create();
+        dialog.show();
+    }
+
+    @Override
     public void onDialogPositiveClick(long id, String title, Date dateTime, boolean isNotifEnabled) {
         Log.d(TAG, "onDialogPositiveClick() called with: id = [" + id + "], title = [" + title + "], dateTime = [" + dateTime + "], isNotifEnabled = [" + isNotifEnabled + "]");
         mPresenter.onOkClicked(id, title, dateTime, isNotifEnabled);
@@ -105,8 +117,12 @@ public class CurrentTasksFragment extends BaseTaskFragment<ICurrentTasksContract
     @Override
     public void onStop() {
         super.onStop();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
         destroyBroadcastReceiver();
         mPresenter.unsubscribe();
     }
-
 }

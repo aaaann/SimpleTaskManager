@@ -46,6 +46,9 @@ public class Task {
     @ColumnInfo(name = "is_notif_added", defaultValue = "true")
     private boolean mIsNotifAdded;
 
+    @ColumnInfo(name = "is_overdue", defaultValue = "false")
+    private boolean mIsOverdue;
+
     public long getId() {
         return mId;
     }
@@ -94,6 +97,14 @@ public class Task {
         this.mIsNotifAdded = isNotifAdded;
     }
 
+    public boolean isOverdue() {
+        return mIsOverdue;
+    }
+
+    public void setIsOverdue(boolean isOverdue) {
+        mIsOverdue = isOverdue;
+    }
+
     @Override
     public String toString() {
         return "Task{" +
@@ -103,6 +114,7 @@ public class Task {
                 ", mIsDone=" + mIsDone +
                 ", mIsDeleted=" + mIsDeleted +
                 ", mIsNotifAdded=" + mIsNotifAdded +
+                ", mIsOverdue=" + mIsOverdue +
                 '}';
     }
 }

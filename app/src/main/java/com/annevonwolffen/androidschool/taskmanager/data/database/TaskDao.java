@@ -12,10 +12,10 @@ import java.util.List;
 @Dao
 public interface TaskDao {
 
-    @Query("select * from Task where is_done = 1 and is_deleted = 0")
+    @Query("select * from Task where is_done = 1 and is_deleted = 0 and is_overdue = 0")
     List<Task> findAllByIsDone();
 
-    @Query("select * from Task where is_done = 0 and is_deleted = 0")
+    @Query("select * from Task where is_done = 0 and is_deleted = 0 and is_overdue = 0")
     List<Task> findAllByNotIsDone();
 
     @Query("select * from Task where id = :id")

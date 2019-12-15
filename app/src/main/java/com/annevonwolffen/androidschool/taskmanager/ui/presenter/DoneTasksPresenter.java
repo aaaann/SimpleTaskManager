@@ -6,6 +6,8 @@ import com.annevonwolffen.androidschool.taskmanager.ui.contract.IBaseContract;
 
 import java.util.Date;
 
+import static com.annevonwolffen.androidschool.taskmanager.ui.util.ConvertUtils.dateToString;
+
 public class DoneTasksPresenter extends BaseTasksPresenter<IBaseContract.IBaseView> implements IBaseContract.IBasePresenter{
 
     public DoneTasksPresenter(IBaseContract.IBaseView view, TaskRepository repository) {
@@ -35,6 +37,16 @@ public class DoneTasksPresenter extends BaseTasksPresenter<IBaseContract.IBaseVi
     @Override
     public void onItemClick(Task task) {
 
+    }
+
+    @Override
+    public void onBindTaskRowViewAtPosition(Task task, IBaseContract.IBaseTaskRow taskRow) {
+        taskRow.setTaskTitle(task.getTitle());
+        taskRow.setTaskDateTime(dateToString(task.getDateTo()));
+        taskRow.setOnLongClickListener(task);
+        taskRow.setOnClickItemListener(task);
+        taskRow.setOnIconClickListener(task);
+        //todo: set icons
     }
 
     @Override

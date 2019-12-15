@@ -38,6 +38,27 @@ public class CurrentTasksPresenter extends BaseTasksPresenter<ICurrentTasksContr
         }
     }
 
+    @Override
+    public void onEditDialogBtnClick(Task task) {
+        mView.openUpdateDialog(task.getId(), task.getTitle(), dateToString(task.getDateTo()), task.isNotifAdded());
+    }
+
+    @Override
+    public void onDoneDialogBtnClick(Task task) {
+        task.setIsDone(true);
+        mRepository.updateTask(task);
+        mNotificationScheduler.removeAlarm(task.getDateTo());
+        mView.showData(mRepository.getAllTasksByDone(false));
+    }
+
+    @Override
+    public void onOverdueDialogBtnClick(Task task) {
+        task.setIsOverdue(true);
+        mRepository.updateTask(task);
+        mNotificationScheduler.removeAlarm(task.getDateTo());
+        mView.showData(mRepository.getAllTasksByDone(false));
+    }
+
     private void updateTask(long id, String title, Date dateTime, boolean isNotifEnabled) {
         Task task = mRepository.getTaskById(id);
         Date prevDate = task.getDateTo();
@@ -67,6 +88,16 @@ public class CurrentTasksPresenter extends BaseTasksPresenter<ICurrentTasksContr
     }
 
     @Override
+    public void onBindTaskRowViewAtPosition(Task task, IBaseContract.IBaseTaskRow taskRow) {
+        taskRow.setTaskTitle(task.getDateTo().before(new Date()) ? task.getTitle() + "!!!OVERDUE!!!" : task.getTitle());
+        taskRow.setTaskDateTime(dateToString(task.getDateTo()));
+        taskRow.setOnLongClickListener(task);
+        taskRow.setOnClickItemListener(task);
+        taskRow.setOnIconClickListener(task);
+        //todo: set icons
+    }
+
+    @Override
     public void onOkClicked(long id, String title, Date dateTime, boolean isNotifEnabled) {
         if (id == -1) {
             // insert
@@ -79,7 +110,11 @@ public class CurrentTasksPresenter extends BaseTasksPresenter<ICurrentTasksContr
 
     @Override
     public void onItemClick(Task task) {
-        mView.openUpdateDialog(task.getId(), task.getTitle(), dateToString(task.getDateTo()), task.isNotifAdded());
+        if (task.getDateTo().after(new Date())) {
+            mView.openUpdateDialog(task.getId(), task.getTitle(), dateToString(task.getDateTo()), task.isNotifAdded());
+        } else {
+            mView.openMultipleChoiceDialog(task);
+        }
     }
 
     @Override
