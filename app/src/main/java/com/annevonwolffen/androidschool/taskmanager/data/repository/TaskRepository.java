@@ -30,7 +30,7 @@ public class TaskRepository {
     }
 
     public List<Task> getAllTasksByDone(boolean isDone) {
-        List<Task> tasks  = Collections.emptyList();
+        List<Task> tasks = Collections.emptyList();
         Future<List<Task>> fTasks = mExecutor.submit(new GetCallable(isDone));
         try {
             tasks = fTasks.get();
@@ -43,6 +43,17 @@ public class TaskRepository {
 
     public Task getTaskById(long id) {
         Future<Task> fTask = mExecutor.submit(new GetOneCallable(id));
+        try {
+            return fTask.get();
+        } catch (ExecutionException | InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    public Task getDeletedTask() {
+        Future<Task> fTask = mExecutor.submit(new GetOneCallable());
         try {
             return fTask.get();
         } catch (ExecutionException | InterruptedException e) {
@@ -97,11 +108,12 @@ public class TaskRepository {
         public List<Task> call() {
 
             if (mIsDone)
-                    return mTaskDao.findAllByIsDone();
-                else
-                    return mTaskDao.findAllByNotIsDone();
+                return mTaskDao.findAllByIsDone();
+            else
+                return mTaskDao.findAllByNotIsDone();
         }
     }
+
 
     private class GetOneCallable implements Callable<Task> {
         private long mId;
@@ -110,11 +122,18 @@ public class TaskRepository {
             mId = id;
         }
 
+        public GetOneCallable() {
+        }
+
         @Override
         public Task call() {
-            return mTaskDao.findById(mId);
+            if (mId != 0)
+                return mTaskDao.findById(mId);
+            else
+                return mTaskDao.findByIsDeletedTrue();
         }
     }
+
 
     private class InsertCallable implements Callable<Long> {
         private Task mTask;

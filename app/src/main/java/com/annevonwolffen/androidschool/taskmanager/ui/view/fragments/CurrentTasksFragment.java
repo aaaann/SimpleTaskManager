@@ -1,5 +1,7 @@
 package com.annevonwolffen.androidschool.taskmanager.ui.view.fragments;
 
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -13,12 +15,11 @@ import androidx.fragment.app.DialogFragment;
 
 import com.annevonwolffen.androidschool.taskmanager.R;
 import com.annevonwolffen.androidschool.taskmanager.data.repository.TaskRepository;
+import com.annevonwolffen.androidschool.taskmanager.ui.alarm.AlarmReceiver;
 import com.annevonwolffen.androidschool.taskmanager.ui.contract.ICurrentTasksContract;
 import com.annevonwolffen.androidschool.taskmanager.ui.presenter.CurrentTasksPresenter;
-import com.annevonwolffen.androidschool.taskmanager.ui.view.adapters.TasksAdapter;
 import com.annevonwolffen.androidschool.taskmanager.ui.view.dialogfragments.AddTaskDialogFragment;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
 
 import java.util.Date;
 
@@ -29,8 +30,7 @@ public class CurrentTasksFragment extends BaseTaskFragment<ICurrentTasksContract
     private static final String TAG = "CurrentTasksFragment";
     private static final int FRAGMENT_TAG = 0;
 
-    private TasksAdapter mAdapter;
-    private Snackbar mSnackbar;
+    private AlarmReceiver mAlarmReceiver;
 
     public CurrentTasksFragment() {
         super(R.layout.fragment_current_tasks);
@@ -50,7 +50,22 @@ public class CurrentTasksFragment extends BaseTaskFragment<ICurrentTasksContract
 
     private void setPresenter() {
         TaskRepository repository = new TaskRepository(requireContext());
+        setUpBroadcastReceiver();
         mPresenter = new CurrentTasksPresenter(this, repository);
+    }
+
+    private void setUpBroadcastReceiver() {
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(Intent.ACTION_BOOT_COMPLETED);
+
+        mAlarmReceiver = new AlarmReceiver();
+
+        requireContext().registerReceiver(mAlarmReceiver, filter);
+    }
+
+    private void destroyBroadcastReceiver() {
+        requireContext().unregisterReceiver(mAlarmReceiver);
+        mAlarmReceiver = null;
     }
 
     private void initFab(View root) {
@@ -84,4 +99,12 @@ public class CurrentTasksFragment extends BaseTaskFragment<ICurrentTasksContract
     public void onDialogNegativeClick() {
         Toast.makeText(requireContext(), "Задача не добавлена", Toast.LENGTH_LONG).show();
     }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        destroyBroadcastReceiver();
+        mPresenter.unsubscribe();
+    }
+
 }

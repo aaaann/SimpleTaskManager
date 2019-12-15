@@ -1,8 +1,6 @@
 package com.annevonwolffen.androidschool.taskmanager.data.database;
 
-import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
-import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.Query;
 import androidx.room.Update;
@@ -22,6 +20,9 @@ public interface TaskDao {
 
     @Query("select * from Task where id = :id")
     Task findById(Long id);
+
+    @Query("select * from Task where is_deleted = 1 limit 1")
+    Task findByIsDeletedTrue();
 
     @Insert
     long insert(Task task);
