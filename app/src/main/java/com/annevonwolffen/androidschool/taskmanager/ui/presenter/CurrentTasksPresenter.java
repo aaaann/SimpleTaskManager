@@ -3,6 +3,7 @@ package com.annevonwolffen.androidschool.taskmanager.ui.presenter;
 import com.annevonwolffen.androidschool.taskmanager.data.model.Task;
 import com.annevonwolffen.androidschool.taskmanager.data.repository.TaskRepository;
 import com.annevonwolffen.androidschool.taskmanager.ui.alarm.AlarmReceiver;
+import com.annevonwolffen.androidschool.taskmanager.ui.contract.IBaseContract;
 import com.annevonwolffen.androidschool.taskmanager.ui.contract.ICurrentTasksContract;
 import com.annevonwolffen.androidschool.taskmanager.ui.contract.IOnTaskOverdueListener;
 
@@ -75,17 +76,6 @@ public class CurrentTasksPresenter extends BaseTasksPresenter<ICurrentTasksContr
         }
     }
 
-
-//    @Override
-//    public void onBindTaskRowViewAtPosition(Task task, IBaseContract.IBaseTaskRow taskRow) {
-//        taskRow.setTaskTitle(task.getTitle());
-//        taskRow.setTaskDateTime(dateToString(task.getDateTo()));
-//        taskRow.setOnLongClickListener(task);
-//        taskRow.setOnClickItemListener(task);
-//        //todo: set icons
-//    }
-
-
     @Override
     public void onItemClick(Task task) {
         mView.openUpdateDialog(task.getId(), task.getTitle(), dateToString(task.getDateTo()), task.isNotifAdded());
@@ -100,13 +90,15 @@ public class CurrentTasksPresenter extends BaseTasksPresenter<ICurrentTasksContr
     public void onReboot() {
         mNotificationScheduler.setAlarm(mRepository.getAllTasksByDone(false));
     }
+
     @Override
     public void onIconClick(Task task, IBaseContract.IBaseTaskRow taskView) {
-//        if (task.getDateTo().after(new Date())) {
-        task.setIsDone(true);
-        mRepository.updateTask(task);
-        taskView.animateMove(true);
-//        }
+        if (task.getDateTo().after(new Date())) {
+            task.setIsDone(true);
+            mRepository.updateTask(task);
+            mNotificationScheduler.removeAlarm(task.getDateTo());
+            taskView.animateMove(true);
+        }
     }
 
     @Override

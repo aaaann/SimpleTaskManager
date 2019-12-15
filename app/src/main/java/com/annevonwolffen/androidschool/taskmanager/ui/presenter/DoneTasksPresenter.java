@@ -43,6 +43,7 @@ public class DoneTasksPresenter extends BaseTasksPresenter<IBaseContract.IBaseVi
             task.setIsDone(false);
             mRepository.updateTask(task);
             taskView.animateMove(false);
+            mNotificationScheduler.setAlarm(task.getTitle(), task.getDateTo(), task.isNotifAdded());
         }
     }
 
