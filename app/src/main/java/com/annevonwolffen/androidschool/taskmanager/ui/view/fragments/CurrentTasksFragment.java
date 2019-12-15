@@ -18,8 +18,10 @@ import com.annevonwolffen.androidschool.taskmanager.data.repository.TaskReposito
 import com.annevonwolffen.androidschool.taskmanager.ui.alarm.AlarmReceiver;
 import com.annevonwolffen.androidschool.taskmanager.ui.contract.ICurrentTasksContract;
 import com.annevonwolffen.androidschool.taskmanager.ui.presenter.CurrentTasksPresenter;
+import com.annevonwolffen.androidschool.taskmanager.ui.view.adapters.TasksAdapter;
 import com.annevonwolffen.androidschool.taskmanager.ui.view.dialogfragments.AddTaskDialogFragment;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
 
 import java.util.Date;
 

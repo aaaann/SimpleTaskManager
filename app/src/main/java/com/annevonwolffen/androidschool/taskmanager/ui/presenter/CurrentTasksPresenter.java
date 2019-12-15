@@ -75,6 +75,17 @@ public class CurrentTasksPresenter extends BaseTasksPresenter<ICurrentTasksContr
         }
     }
 
+
+//    @Override
+//    public void onBindTaskRowViewAtPosition(Task task, IBaseContract.IBaseTaskRow taskRow) {
+//        taskRow.setTaskTitle(task.getTitle());
+//        taskRow.setTaskDateTime(dateToString(task.getDateTo()));
+//        taskRow.setOnLongClickListener(task);
+//        taskRow.setOnClickItemListener(task);
+//        //todo: set icons
+//    }
+
+
     @Override
     public void onItemClick(Task task) {
         mView.openUpdateDialog(task.getId(), task.getTitle(), dateToString(task.getDateTo()), task.isNotifAdded());
@@ -88,5 +99,18 @@ public class CurrentTasksPresenter extends BaseTasksPresenter<ICurrentTasksContr
     @Override
     public void onReboot() {
         mNotificationScheduler.setAlarm(mRepository.getAllTasksByDone(false));
+    }
+    @Override
+    public void onIconClick(Task task, IBaseContract.IBaseTaskRow taskView) {
+//        if (task.getDateTo().after(new Date())) {
+        task.setIsDone(true);
+        mRepository.updateTask(task);
+        taskView.animateMove(true);
+//        }
+    }
+
+    @Override
+    public void onAnimationEnd() {
+        mView.showData(mRepository.getAllTasksByDone(false));
     }
 }

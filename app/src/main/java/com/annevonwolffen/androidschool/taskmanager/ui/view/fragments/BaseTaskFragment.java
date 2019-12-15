@@ -60,6 +60,7 @@ public abstract class BaseTaskFragment<T extends IBaseContract.IBasePresenter> e
                 });
     }
 
+
     @Override
     public void showData(List<Task> tasks) {
         mAdapter.setTasks(tasks);
@@ -71,9 +72,7 @@ public abstract class BaseTaskFragment<T extends IBaseContract.IBasePresenter> e
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(requireContext());
         dialogBuilder.setMessage("Удалить выбранный элемент?");
 
-        dialogBuilder.setPositiveButton("ОК", (dialog, which) -> {
-            mPresenter.onDelete(task);
-        });
+        dialogBuilder.setPositiveButton("ОК", (dialog, which) -> mPresenter.onDelete(task));
         AlertDialog dialog = dialogBuilder.create();
         dialog.show();
     }
@@ -90,5 +89,8 @@ public abstract class BaseTaskFragment<T extends IBaseContract.IBasePresenter> e
         mPresenter.loadData();
     }
 
-
+    @Override
+    public void refreshTabFragment() {
+        mPresenter.loadData();
+    }
 }

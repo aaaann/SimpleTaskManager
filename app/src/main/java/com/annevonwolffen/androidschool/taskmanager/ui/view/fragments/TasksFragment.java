@@ -12,6 +12,7 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.annevonwolffen.androidschool.taskmanager.R;
 import com.annevonwolffen.androidschool.taskmanager.ui.alarm.NotificationScheduler;
+import com.annevonwolffen.androidschool.taskmanager.ui.contract.IBaseContract;
 import com.annevonwolffen.androidschool.taskmanager.ui.view.adapters.TabAdapter;
 import com.google.android.material.tabs.TabLayout;
 
@@ -36,6 +37,28 @@ public class TasksFragment extends Fragment {
         TabLayout tabLayout = root.findViewById(R.id.tab_layout);
         tabLayout.setupWithViewPager(viewPager);
 
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                Fragment frag = mTabAdapter.getItem(position);
+                if (frag != null && frag instanceof IBaseContract.IBaseView) {
+                    ((IBaseContract.IBaseView)frag).refreshTabFragment();
+                }
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
+
         return root;
     }
+
+
 }

@@ -50,6 +50,7 @@ public abstract class BaseTasksPresenter<T extends IBaseContract.IBaseView> impl
         taskRow.setTaskDateTime(dateToString(task.getDateTo()));
         taskRow.setOnLongClickListener(task);
         taskRow.setOnClickItemListener(task);
+        taskRow.setOnIconClickListener(task);
         //todo: set icons
     }
 

@@ -93,4 +93,16 @@ public class Task {
     public void setIsNotifAdded(boolean isNotifAdded) {
         this.mIsNotifAdded = isNotifAdded;
     }
+
+    @Override
+    public String toString() {
+        return "Task{" +
+                "mId=" + mId +
+                ", mTitle='" + mTitle + '\'' +
+                ", mDateTo=" + mDateTo +
+                ", mIsDone=" + mIsDone +
+                ", mIsDeleted=" + mIsDeleted +
+                ", mIsNotifAdded=" + mIsNotifAdded +
+                '}';
+    }
 }
