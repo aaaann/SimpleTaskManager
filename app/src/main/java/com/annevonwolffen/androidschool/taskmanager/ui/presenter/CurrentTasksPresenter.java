@@ -17,6 +17,7 @@ public class CurrentTasksPresenter extends BaseTasksPresenter<ICurrentTasksContr
     public CurrentTasksPresenter(ICurrentTasksContract.IView view, TaskRepository repository) {
         super(repository, view);
         AlarmReceiver.bindListener(this);
+        mNotificationScheduler.setAlarm(mRepository.getAllTasksByDone(false));
     }
 
     @Override

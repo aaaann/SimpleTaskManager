@@ -53,7 +53,7 @@ public class NotificationScheduler {
         // todo: parameters take from sharedPreferences
         Date notification1Date =  substractDays(date, 1);// за день
         Date notification2Date = substractHours(date, 1); // за час
-        Date notification3Date = substractMinutes(date, 10); // за 10 мин
+        Date notification3Date = substractMinutes(date, 2); // за 10 мин
         if (new Date().before(notification1Date)) {
             PendingIntent pendingIntent1 = PendingIntent.getBroadcast(mContext,
                     (int) notification1Date.getTime(), intent, PendingIntent.FLAG_UPDATE_CURRENT);
@@ -74,7 +74,9 @@ public class NotificationScheduler {
 
     public void setAlarm(List<Task> tasks) {
         for (Task task : tasks) {
-            setAlarm(task.getTitle(), task.getDateTo(), task.isNotifAdded());
+            if (task.getDateTo().after(new Date())) {
+                setAlarm(task.getTitle(), task.getDateTo(), task.isNotifAdded());
+            }
         }
     }
 
@@ -90,7 +92,7 @@ public class NotificationScheduler {
                 intent, PendingIntent.FLAG_UPDATE_CURRENT);
         PendingIntent pendingIntent2 = PendingIntent.getBroadcast(mContext, (int) substractHours(date, 1).getTime(),
                 intent, PendingIntent.FLAG_UPDATE_CURRENT);
-        PendingIntent pendingIntent3 = PendingIntent.getBroadcast(mContext, (int) substractMinutes(date, 10).getTime(),
+        PendingIntent pendingIntent3 = PendingIntent.getBroadcast(mContext, (int) substractMinutes(date, 2).getTime(),
                 intent, PendingIntent.FLAG_UPDATE_CURRENT);
         //отменяем оповещение
         mAlarmManager.cancel(pendingIntent1);
