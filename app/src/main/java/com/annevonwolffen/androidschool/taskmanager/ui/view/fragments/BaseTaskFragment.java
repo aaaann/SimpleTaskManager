@@ -29,7 +29,6 @@ public abstract class BaseTaskFragment<T extends IBaseContract.IBasePresenter> e
 
     public BaseTaskFragment(@LayoutRes int contentLayoutId) {
         super(contentLayoutId);
-//        NotificationScheduler.getInstance().init(requireContext());
     }
 
 

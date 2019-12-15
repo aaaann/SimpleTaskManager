@@ -13,8 +13,8 @@ import androidx.fragment.app.DialogFragment;
 
 import com.annevonwolffen.androidschool.taskmanager.R;
 import com.annevonwolffen.androidschool.taskmanager.data.repository.TaskRepository;
-import com.annevonwolffen.androidschool.taskmanager.ui.alarm.NotificationScheduler;
 import com.annevonwolffen.androidschool.taskmanager.ui.contract.ICurrentTasksContract;
+import com.annevonwolffen.androidschool.taskmanager.ui.contract.IOnTaskOverdueListener;
 import com.annevonwolffen.androidschool.taskmanager.ui.presenter.CurrentTasksPresenter;
 import com.annevonwolffen.androidschool.taskmanager.ui.view.dialogfragments.AddTaskDialogFragment;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -80,4 +80,5 @@ public class CurrentTasksFragment extends BaseTaskFragment<ICurrentTasksContract
     public void onDialogNegativeClick() {
         Toast.makeText(requireContext(), "Задача не добавлена", Toast.LENGTH_LONG).show();
     }
+
 }

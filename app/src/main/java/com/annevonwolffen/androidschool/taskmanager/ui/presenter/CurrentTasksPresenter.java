@@ -6,12 +6,14 @@ import com.annevonwolffen.androidschool.taskmanager.data.model.Task;
 import com.annevonwolffen.androidschool.taskmanager.data.repository.TaskRepository;
 import com.annevonwolffen.androidschool.taskmanager.ui.contract.IBaseContract;
 import com.annevonwolffen.androidschool.taskmanager.ui.contract.ICurrentTasksContract;
+import com.annevonwolffen.androidschool.taskmanager.ui.contract.IOnTaskOverdueListener;
 
 import java.util.Date;
 
 import static com.annevonwolffen.androidschool.taskmanager.ui.util.ConvertUtils.dateToString;
 
-public class CurrentTasksPresenter extends BaseTasksPresenter<ICurrentTasksContract.IView> implements ICurrentTasksContract.IPresenter {
+public class CurrentTasksPresenter extends BaseTasksPresenter<ICurrentTasksContract.IView> implements ICurrentTasksContract.IPresenter,
+        IOnTaskOverdueListener {
 
     public CurrentTasksPresenter(ICurrentTasksContract.IView view, TaskRepository repository) {
         super(repository, view);
@@ -43,6 +45,7 @@ public class CurrentTasksPresenter extends BaseTasksPresenter<ICurrentTasksContr
             if (isNotifEnabled) {
                 mNotificationScheduler.setAlarm(title, dateTime);
             }
+            mNotificationScheduler.setOverdueRefresh(dateTime, this);
             mView.showData(mRepository.getAllTasksByDone(false));
         }
     }
@@ -58,6 +61,7 @@ public class CurrentTasksPresenter extends BaseTasksPresenter<ICurrentTasksContr
             if (isNotifEnabled) {
                 mNotificationScheduler.setAlarm(title, dateTime);
             }
+            mNotificationScheduler.setOverdueRefresh(dateTime, this);
             mView.showData(mRepository.getAllTasksByDone(false));
         }
     }
@@ -93,4 +97,8 @@ public class CurrentTasksPresenter extends BaseTasksPresenter<ICurrentTasksContr
         mView.openUpdateDialog(task.getId(), task.getTitle(), dateToString(task.getDateTo()), task.isNotifAdded());
     }
 
+    @Override
+    public void onOverdue() {
+        loadData();
+    }
 }
