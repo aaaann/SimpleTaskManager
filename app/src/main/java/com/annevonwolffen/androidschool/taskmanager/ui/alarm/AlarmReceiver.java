@@ -18,7 +18,8 @@ import com.annevonwolffen.androidschool.taskmanager.R;
 import com.annevonwolffen.androidschool.taskmanager.ui.contract.IOnTaskOverdueListener;
 import com.annevonwolffen.androidschool.taskmanager.ui.view.MainActivity;
 
-import static com.annevonwolffen.androidschool.taskmanager.ui.alarm.NotificationScheduler.ACTION_REFRESH_ON_OVERDUE;
+import java.util.Date;
+
 import static com.annevonwolffen.androidschool.taskmanager.ui.alarm.NotificationScheduler.EXTRA_DATETIME;
 import static com.annevonwolffen.androidschool.taskmanager.ui.alarm.NotificationScheduler.EXTRA_LABEL;
 import static com.annevonwolffen.androidschool.taskmanager.ui.util.ConvertUtils.stringToDate;
@@ -36,30 +37,34 @@ public class AlarmReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        if (intent.getAction() != null && intent.getAction().equals(ACTION_REFRESH_ON_OVERDUE)) {
-            mListener.onOverdue();
+        if (intent.getAction() != null && intent.getAction().equalsIgnoreCase(Intent.ACTION_BOOT_COMPLETED)) {
+            if (mListener != null) {
+                mListener.onReboot();
+            }
         } else {
-            String title = intent.getStringExtra(EXTRA_LABEL);
-            String dateTime = intent.getStringExtra(EXTRA_DATETIME);
+            if (mListener != null) {
+                mListener.onOverdue();
+            }
+
+            if (intent.getStringExtra(EXTRA_LABEL) != null && intent.getStringExtra(EXTRA_DATETIME) != null) {
+                String title = intent.getStringExtra(EXTRA_LABEL);
+                String dateTime = intent.getStringExtra(EXTRA_DATETIME);
 
 
-            Intent resultIntent = new Intent(context, MainActivity.class);
+                Intent resultIntent = new Intent(context, MainActivity.class);
 
-            //если приложение запущено, оно не будет перезапускаться
-//        if (MyApplication.isActivityVisible()) {
-//            resultIntent = intent;
-//        }
+                //если приложение закрыто, AlarmReceiver будет стартовать новое активити
+                resultIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                PendingIntent pendingIntent = PendingIntent.getActivity(context, (int) stringToDate(dateTime).getTime(),
+                        resultIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-            //если приложение закрыто, AlarmReceiver будет стартовать новое активити
-            resultIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-            PendingIntent pendingIntent = PendingIntent.getActivity(context, (int) stringToDate(dateTime).getTime(),
-                    resultIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+                createNotificationChannel(context);
+                NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
 
-            createNotificationChannel(context);
-            Notification notification = createNotification(context, title, pendingIntent);
+                Notification notification = createNotification(context, title, dateTime, pendingIntent);
 
-            NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
-            notificationManager.notify((int) stringToDate(dateTime).getTime(), notification);
+                notificationManager.notify((int) stringToDate(dateTime).getTime(), notification);
+            }
         }
     }
 
@@ -75,15 +80,15 @@ public class AlarmReceiver extends BroadcastReceiver {
         }
     }
 
-    private Notification createNotification(Context context, String label, PendingIntent pendingIntent) {
+    private Notification createNotification(Context context, String label, String dateTime, PendingIntent pendingIntent) {
 
         Uri alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context,
                 CHANNEL_ID)
                 .setSmallIcon(R.drawable.ic_priority_high_black_24dp)
-                .setContentTitle("SimpleTaskManager")
-                .setContentText(label)
+                .setContentTitle(label)
+                .setContentText("Сделать до " + dateTime)
                 .setOnlyAlertOnce(true)
                 .setSound(alarmSound)
                 .setAutoCancel(true)

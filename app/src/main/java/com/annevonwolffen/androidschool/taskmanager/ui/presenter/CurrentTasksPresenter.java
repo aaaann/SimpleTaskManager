@@ -1,10 +1,8 @@
 package com.annevonwolffen.androidschool.taskmanager.ui.presenter;
 
-import androidx.annotation.NonNull;
-
 import com.annevonwolffen.androidschool.taskmanager.data.model.Task;
 import com.annevonwolffen.androidschool.taskmanager.data.repository.TaskRepository;
-import com.annevonwolffen.androidschool.taskmanager.ui.contract.IBaseContract;
+import com.annevonwolffen.androidschool.taskmanager.ui.alarm.AlarmReceiver;
 import com.annevonwolffen.androidschool.taskmanager.ui.contract.ICurrentTasksContract;
 import com.annevonwolffen.androidschool.taskmanager.ui.contract.IOnTaskOverdueListener;
 
@@ -17,16 +15,7 @@ public class CurrentTasksPresenter extends BaseTasksPresenter<ICurrentTasksContr
 
     public CurrentTasksPresenter(ICurrentTasksContract.IView view, TaskRepository repository) {
         super(repository, view);
-    }
-
-    @Override
-    public void subscribe(@NonNull IBaseContract.IBaseView view) {
-
-    }
-
-    @Override
-    public void unsubscribe() {
-        mView = null;
+        AlarmReceiver.bindListener(this);
     }
 
     @Override
@@ -42,10 +31,7 @@ public class CurrentTasksPresenter extends BaseTasksPresenter<ICurrentTasksContr
     @Override
     public void insertTask(String title, Date dateTime, boolean isNotifEnabled) {
         if (mRepository.insertTask(new Task(title, dateTime, isNotifEnabled)) != -1) {
-            if (isNotifEnabled) {
-                mNotificationScheduler.setAlarm(title, dateTime);
-            }
-            mNotificationScheduler.setOverdueRefresh(dateTime, this);
+            mNotificationScheduler.setAlarm(title, dateTime, isNotifEnabled);
             mView.showData(mRepository.getAllTasksByDone(false));
         }
     }
@@ -58,10 +44,7 @@ public class CurrentTasksPresenter extends BaseTasksPresenter<ICurrentTasksContr
         task.setIsNotifAdded(isNotifEnabled);
         if (mRepository.updateTask(task) > 0) {
             mNotificationScheduler.removeAlarm(prevDate);
-            if (isNotifEnabled) {
-                mNotificationScheduler.setAlarm(title, dateTime);
-            }
-            mNotificationScheduler.setOverdueRefresh(dateTime, this);
+            mNotificationScheduler.setAlarm(title, dateTime, isNotifEnabled);
             mView.showData(mRepository.getAllTasksByDone(false));
         }
     }
@@ -100,5 +83,10 @@ public class CurrentTasksPresenter extends BaseTasksPresenter<ICurrentTasksContr
     @Override
     public void onOverdue() {
         loadData();
+    }
+
+    @Override
+    public void onReboot() {
+        mNotificationScheduler.setAlarm(mRepository.getAllTasksByDone(false));
     }
 }

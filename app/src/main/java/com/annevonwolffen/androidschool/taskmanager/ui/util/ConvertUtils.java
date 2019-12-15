@@ -3,6 +3,7 @@ package com.annevonwolffen.androidschool.taskmanager.ui.util;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 public class ConvertUtils {
@@ -32,5 +33,26 @@ public class ConvertUtils {
         String time = dateTime.substring(dateTime.indexOf(" ") + 1);
         String[] aTime = time.split(":");
         return new int[]{Integer.parseInt(aTime[0]), Integer.parseInt(aTime[1])};
+    }
+
+    public static Date substractDays(Date date, int days) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        cal.add(Calendar.DATE, -days);
+        return cal.getTime();
+    }
+
+    public static Date substractHours(Date date, int hours) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        cal.add(Calendar.HOUR_OF_DAY, -hours);
+        return cal.getTime();
+    }
+
+    public static Date substractMinutes(Date date, int minutes) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        cal.add(Calendar.MINUTE, -minutes);
+        return cal.getTime();
     }
 }
