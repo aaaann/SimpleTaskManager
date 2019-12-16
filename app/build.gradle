@@ -42,6 +42,7 @@ dependencies {
     implementation 'androidx.recyclerview:recyclerview:1.1.0'
     implementation 'androidx.cardview:cardview:1.0.0'
     implementation 'androidx.room:room-runtime:2.2.2'
+    implementation 'androidx.preference:preference:1.1.0'
     annotationProcessor 'androidx.room:room-compiler:2.2.2'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test:runner:1.2.0'
