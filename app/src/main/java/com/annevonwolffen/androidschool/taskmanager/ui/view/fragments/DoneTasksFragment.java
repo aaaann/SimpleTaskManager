@@ -15,7 +15,7 @@ import com.annevonwolffen.androidschool.taskmanager.ui.presenter.DoneTasksPresen
 import com.annevonwolffen.androidschool.taskmanager.ui.view.util.ResourceWrapper;
 
 public class DoneTasksFragment extends BaseTaskFragment<IBaseContract.IBasePresenter> {
-    public static final String PAGE_TITLE = "Done";
+    public static String PAGE_TITLE = "Сделанные";
 
     public DoneTasksFragment() {
         super(R.layout.fragment_done_tasks);

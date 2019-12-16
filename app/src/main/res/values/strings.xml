@@ -13,4 +13,18 @@
   <string name="menu_tools">Tools</string>
   <string name="menu_share">Share</string>
   <string name="menu_send">Send</string>
+    <string name="page_title_done">Сделанные</string>
+  <string name="page_title_current">Текущие</string>
+  <string name="canceled">Отменено</string>
+  <string name="task_is_overdue">Задача просрочена... :(</string>
+  <string name="dialog_btn_text_edit">Редактировать</string>
+  <string name="dialog_btn_text_done">Сделано</string>
+  <string name="dialog_btn_text_overdue">Не сделано</string>
+  <string name="dialog_btn_ok">ОК</string>
+  <string name="delete_dialog_message">Удалить выбранный элемент?</string>
+  <string name="toast_on_snackbar_message">Удаление отменено</string>
+  <string name="cancel">ОТМЕНА</string>
+  <string name="snackbar_message">Удален 1 элемент</string>
+  <string name="add_dialog_edit_task_text">Введите задачу</string>
+  <string name="notification_content_text">Сделать до</string>
 </resources>

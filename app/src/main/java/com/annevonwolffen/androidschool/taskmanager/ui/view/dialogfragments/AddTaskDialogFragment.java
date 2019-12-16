@@ -31,7 +31,6 @@ import static com.annevonwolffen.androidschool.taskmanager.ui.util.ConvertUtils.
 
 public class AddTaskDialogFragment extends DialogFragment {
 
-    private final static String TAG = "AddTaskDialogFragment";
     private static final String ARG_ID = "argId";
     private static final String ARG_TITLE = "argTitle";
     private static final String ARG_DATE = "argDate";
@@ -103,7 +102,7 @@ public class AddTaskDialogFragment extends DialogFragment {
         });
 
         builder.setView(root)
-                .setPositiveButton("ОК", (dialog, which) -> {
+                .setPositiveButton(R.string.dialog_btn_ok, (dialog, which) -> {
 
                     String title = etTitle.getText().toString();
                     boolean isNotifEnabled = chbxAddNotification.isChecked();
@@ -111,7 +110,7 @@ public class AddTaskDialogFragment extends DialogFragment {
                     addDialogListener.onDialogPositiveClick(getArguments() != null ? getArguments().getLong(ARG_ID) : -1, title, stringToDate(dateTime), isNotifEnabled);
                     dialog.dismiss();
                 })
-                .setNegativeButton("Отмена", (dialog, which) -> {
+                .setNegativeButton(R.string.cancel, (dialog, which) -> {
 
                     addDialogListener.onDialogNegativeClick();
                     dialog.cancel();
@@ -127,7 +126,7 @@ public class AddTaskDialogFragment extends DialogFragment {
 
                 if (etTitle.getText().toString().isEmpty()) {
                     okButton.setEnabled(false);
-                    tilTitle.setError("Введите задачу");
+                    tilTitle.setError(getString(R.string.add_dialog_edit_task_text));
                 }
 
                 etTitle.addTextChangedListener(new TextWatcher() {

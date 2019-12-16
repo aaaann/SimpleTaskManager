@@ -14,7 +14,6 @@ import com.annevonwolffen.androidschool.taskmanager.R;
 import com.annevonwolffen.androidschool.taskmanager.data.model.Task;
 import com.annevonwolffen.androidschool.taskmanager.ui.contract.IBaseContract;
 import com.annevonwolffen.androidschool.taskmanager.ui.view.adapters.TasksAdapter;
-import com.annevonwolffen.androidschool.taskmanager.ui.view.util.ResourceWrapper;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -45,7 +44,7 @@ public abstract class BaseTaskFragment<T extends IBaseContract.IBasePresenter> e
 
     protected void initSnackbar(View root) {
         mSnackbar = Snackbar.make(root.findViewById(R.id.root_coordinator),
-                "Удален 1 элемент", Snackbar.LENGTH_LONG)
+                R.string.snackbar_message, Snackbar.LENGTH_LONG)
                 .setCallback(new Snackbar.Callback() {
                                  @Override
                                  public void onDismissed(Snackbar snackbar, int event) {
@@ -55,8 +54,8 @@ public abstract class BaseTaskFragment<T extends IBaseContract.IBasePresenter> e
                                  }
                              }
                 )
-                .setAction("ОТМЕНА", v -> {
-                    Toast.makeText(requireContext(), "Удаление отменено", Toast.LENGTH_LONG).show();
+                .setAction(R.string.cancel, v -> {
+                    Toast.makeText(requireContext(), getString(R.string.toast_on_snackbar_message), Toast.LENGTH_LONG).show();
                     mPresenter.onDeleteCancel();
                 });
     }
@@ -71,9 +70,9 @@ public abstract class BaseTaskFragment<T extends IBaseContract.IBasePresenter> e
     @Override
     public void openDeletingDialog(Task task) {
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(requireContext());
-        dialogBuilder.setMessage("Удалить выбранный элемент?");
+        dialogBuilder.setMessage(R.string.delete_dialog_message);
 
-        dialogBuilder.setPositiveButton("ОК", (dialog, which) -> mPresenter.onDelete(task));
+        dialogBuilder.setPositiveButton(R.string.dialog_btn_ok, (dialog, which) -> mPresenter.onDelete(task));
         AlertDialog dialog = dialogBuilder.create();
         dialog.show();
     }

@@ -3,7 +3,6 @@ package com.annevonwolffen.androidschool.taskmanager.ui.view.fragments;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,9 +27,8 @@ import java.util.Date;
 
 public class CurrentTasksFragment extends BaseTaskFragment<ICurrentTasksContract.IPresenter> implements ICurrentTasksContract.IView,
         AddTaskDialogFragment.AddDialogListener {
-    public static final String PAGE_TITLE = "Current";
+    public static String PAGE_TITLE = "Текущие";
     private static final String DIALOG_TAG = "AddTaskDialogFragment";
-    private static final String TAG = "CurrentTasksFragment";
     private static final int FRAGMENT_TAG = 0;
 
     private AlarmReceiver mAlarmReceiver;
@@ -43,7 +41,6 @@ public class CurrentTasksFragment extends BaseTaskFragment<ICurrentTasksContract
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View root = super.onCreateView(inflater, container, savedInstanceState);
-
         setPresenter();
         initRecyclerView(root);
         initFab(root);
@@ -87,7 +84,6 @@ public class CurrentTasksFragment extends BaseTaskFragment<ICurrentTasksContract
 
     @Override
     public void openUpdateDialog(long id, String title, String date, boolean isNotifAdded) {
-        Log.d(TAG, "openUpdateDialog() called with: id = [" + id + "], title = [" + title + "], date = [" + date + "], isNotifAdded = [" + isNotifAdded + "]");
         DialogFragment dialog = AddTaskDialogFragment.newInstance(id, title, date, isNotifAdded);
         dialog.setTargetFragment(this, FRAGMENT_TAG);
         dialog.show(getFragmentManager(), DIALOG_TAG);
@@ -96,24 +92,23 @@ public class CurrentTasksFragment extends BaseTaskFragment<ICurrentTasksContract
     @Override
     public void openMultipleChoiceDialog(Task task) {
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(requireContext());
-        dialogBuilder.setMessage("Задача просрочена... :(");
+        dialogBuilder.setMessage(R.string.task_is_overdue);
 
-        dialogBuilder.setNeutralButton("Редактировать", (dialog, which) -> mPresenter.onEditDialogBtnClick(task));
-        dialogBuilder.setPositiveButton("Сделано", (dialog, which) -> mPresenter.onDoneDialogBtnClick(task));
-        dialogBuilder.setNegativeButton("Не сделано", (dialog, which) -> mPresenter.onOverdueDialogBtnClick(task));
+        dialogBuilder.setNeutralButton(R.string.dialog_btn_text_edit, (dialog, which) -> mPresenter.onEditDialogBtnClick(task));
+        dialogBuilder.setPositiveButton(R.string.dialog_btn_text_done, (dialog, which) -> mPresenter.onDoneDialogBtnClick(task));
+        dialogBuilder.setNegativeButton(R.string.dialog_btn_text_overdue, (dialog, which) -> mPresenter.onOverdueDialogBtnClick(task));
         AlertDialog dialog = dialogBuilder.create();
         dialog.show();
     }
 
     @Override
     public void onDialogPositiveClick(long id, String title, Date dateTime, boolean isNotifEnabled) {
-        Log.d(TAG, "onDialogPositiveClick() called with: id = [" + id + "], title = [" + title + "], dateTime = [" + dateTime + "], isNotifEnabled = [" + isNotifEnabled + "]");
         mPresenter.onOkClicked(id, title, dateTime, isNotifEnabled);
     }
 
     @Override
     public void onDialogNegativeClick() {
-        Toast.makeText(requireContext(), "Задача не добавлена", Toast.LENGTH_LONG).show();
+        Toast.makeText(requireContext(), getString(R.string.canceled), Toast.LENGTH_LONG).show();
     }
 
     @Override
