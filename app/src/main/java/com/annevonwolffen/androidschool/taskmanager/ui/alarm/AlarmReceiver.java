@@ -88,7 +88,7 @@ public class AlarmReceiver extends BroadcastReceiver {
                 CHANNEL_ID)
                 .setSmallIcon(R.drawable.ic_event_note_black_24dp)
                 .setContentTitle(label)
-                .setContentText(R.string.notification_content_text + dateTime)
+                .setContentText(context.getString(R.string.notification_content_text) + " " + dateTime)
                 .setOnlyAlertOnce(true)
                 .setSound(alarmSound)
                 .setAutoCancel(true)
