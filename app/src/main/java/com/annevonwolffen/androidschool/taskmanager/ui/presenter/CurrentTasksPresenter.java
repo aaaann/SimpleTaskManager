@@ -6,6 +6,7 @@ import com.annevonwolffen.androidschool.taskmanager.ui.alarm.AlarmReceiver;
 import com.annevonwolffen.androidschool.taskmanager.ui.contract.IBaseContract;
 import com.annevonwolffen.androidschool.taskmanager.ui.contract.ICurrentTasksContract;
 import com.annevonwolffen.androidschool.taskmanager.ui.contract.IOnTaskOverdueListener;
+import com.annevonwolffen.androidschool.taskmanager.ui.view.util.ResourceWrapper;
 
 import java.util.Date;
 
@@ -14,8 +15,8 @@ import static com.annevonwolffen.androidschool.taskmanager.ui.util.ConvertUtils.
 public class CurrentTasksPresenter extends BaseTasksPresenter<ICurrentTasksContract.IView> implements ICurrentTasksContract.IPresenter,
         IOnTaskOverdueListener {
 
-    public CurrentTasksPresenter(ICurrentTasksContract.IView view, TaskRepository repository) {
-        super(repository, view);
+    public CurrentTasksPresenter(ICurrentTasksContract.IView view, TaskRepository repository, ResourceWrapper resourceWrapper) {
+        super(repository, view, resourceWrapper);
         AlarmReceiver.bindListener(this);
         mNotificationScheduler.setAlarm(mRepository.getAllTasksByDone(false));
     }
@@ -89,12 +90,14 @@ public class CurrentTasksPresenter extends BaseTasksPresenter<ICurrentTasksContr
 
     @Override
     public void onBindTaskRowViewAtPosition(Task task, IBaseContract.IBaseTaskRow taskRow) {
-        taskRow.setTaskTitle(task.getDateTo().before(new Date()) ? task.getTitle() + "!!!OVERDUE!!!" : task.getTitle());
+        taskRow.setTaskTitle(task.getTitle());
         taskRow.setTaskDateTime(dateToString(task.getDateTo()));
+        taskRow.setTaskDateColor(task.getDateTo().after(new Date()) ? mResourceWrapper.getStandardDateColor() : mResourceWrapper.getOverdueTaskDateColor());
         taskRow.setOnLongClickListener(task);
         taskRow.setOnClickItemListener(task);
         taskRow.setOnIconClickListener(task);
-        //todo: set icons
+        taskRow.setTaskIcon(task.getDateTo().after(new Date()) ? mResourceWrapper.getTaskIcon() : mResourceWrapper.getOverdueTaskIcon());
+        taskRow.setNotificationIcon(task.isNotifAdded() ? mResourceWrapper.getNotificationEnabledIcon() : mResourceWrapper.getNotificationDisabledIcon());
     }
 
     @Override

@@ -14,6 +14,7 @@ import com.annevonwolffen.androidschool.taskmanager.R;
 import com.annevonwolffen.androidschool.taskmanager.data.model.Task;
 import com.annevonwolffen.androidschool.taskmanager.ui.contract.IBaseContract;
 import com.annevonwolffen.androidschool.taskmanager.ui.view.adapters.TasksAdapter;
+import com.annevonwolffen.androidschool.taskmanager.ui.view.util.ResourceWrapper;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
 

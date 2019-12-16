@@ -3,6 +3,7 @@ package com.annevonwolffen.androidschool.taskmanager.ui.presenter;
 import com.annevonwolffen.androidschool.taskmanager.data.model.Task;
 import com.annevonwolffen.androidschool.taskmanager.data.repository.TaskRepository;
 import com.annevonwolffen.androidschool.taskmanager.ui.contract.IBaseContract;
+import com.annevonwolffen.androidschool.taskmanager.ui.view.util.ResourceWrapper;
 
 import java.util.Date;
 
@@ -10,8 +11,8 @@ import static com.annevonwolffen.androidschool.taskmanager.ui.util.ConvertUtils.
 
 public class DoneTasksPresenter extends BaseTasksPresenter<IBaseContract.IBaseView> implements IBaseContract.IBasePresenter{
 
-    public DoneTasksPresenter(IBaseContract.IBaseView view, TaskRepository repository) {
-        super(repository, view);
+    public DoneTasksPresenter(IBaseContract.IBaseView view, TaskRepository repository, ResourceWrapper resourceWrapper) {
+        super(repository, view, resourceWrapper);
     }
 
 
@@ -43,10 +44,11 @@ public class DoneTasksPresenter extends BaseTasksPresenter<IBaseContract.IBaseVi
     public void onBindTaskRowViewAtPosition(Task task, IBaseContract.IBaseTaskRow taskRow) {
         taskRow.setTaskTitle(task.getTitle());
         taskRow.setTaskDateTime(dateToString(task.getDateTo()));
+        taskRow.setTaskDateColor(task.getDateTo().after(new Date()) ? mResourceWrapper.getStandardDateColor() : mResourceWrapper.getStandardTitleColor());
         taskRow.setOnLongClickListener(task);
         taskRow.setOnClickItemListener(task);
         taskRow.setOnIconClickListener(task);
-        //todo: set icons
+        taskRow.setTaskIcon(task.getDateTo().after(new Date()) ? mResourceWrapper.getDoneTaskIcon() : mResourceWrapper.getLongAgoDoneTaskIcon());
     }
 
     @Override

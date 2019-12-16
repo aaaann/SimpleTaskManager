@@ -6,21 +6,20 @@ import com.annevonwolffen.androidschool.taskmanager.data.model.Task;
 import com.annevonwolffen.androidschool.taskmanager.data.repository.TaskRepository;
 import com.annevonwolffen.androidschool.taskmanager.ui.alarm.NotificationScheduler;
 import com.annevonwolffen.androidschool.taskmanager.ui.contract.IBaseContract;
-
-import java.util.Date;
-
-import static com.annevonwolffen.androidschool.taskmanager.ui.util.ConvertUtils.dateToString;
+import com.annevonwolffen.androidschool.taskmanager.ui.view.util.ResourceWrapper;
 
 public abstract class BaseTasksPresenter<T extends IBaseContract.IBaseView> implements IBaseContract.IBasePresenter {
 
     protected final TaskRepository mRepository;
     protected T mView;
     protected NotificationScheduler mNotificationScheduler;
+    protected final ResourceWrapper mResourceWrapper;
 
-    public BaseTasksPresenter(TaskRepository repository, T view) {
+    public BaseTasksPresenter(TaskRepository repository, T view, @NonNull ResourceWrapper resourceWrapper) {
         mRepository = repository;
         mView = view;
         mNotificationScheduler = NotificationScheduler.getInstance();
+        mResourceWrapper = resourceWrapper;
     }
 
     @Override

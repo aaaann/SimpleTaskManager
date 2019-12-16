@@ -1,5 +1,7 @@
 package com.annevonwolffen.androidschool.taskmanager.ui.contract;
 
+import android.graphics.drawable.Drawable;
+
 import androidx.annotation.NonNull;
 
 import com.annevonwolffen.androidschool.taskmanager.data.model.Task;
@@ -31,9 +33,11 @@ public interface IBaseContract {
 
     interface IBaseTaskRow {
         void setTaskTitle(String title);
+        void setTitleColor(int color);
         void setTaskDateTime(String dateTime);
-        void setIconColor(int color);
-        void setNotificationIcon(int color);
+        void setTaskIcon(Drawable drawable);
+        void setNotificationIcon(Drawable drawable);
+        void setTaskDateColor(int color);
         void setOnLongClickListener(Task task);
         void setOnClickItemListener(Task task);
         void setOnIconClickListener(Task task);

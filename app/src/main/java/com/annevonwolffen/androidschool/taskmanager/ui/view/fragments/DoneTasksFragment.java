@@ -12,11 +12,10 @@ import com.annevonwolffen.androidschool.taskmanager.R;
 import com.annevonwolffen.androidschool.taskmanager.data.repository.TaskRepository;
 import com.annevonwolffen.androidschool.taskmanager.ui.contract.IBaseContract;
 import com.annevonwolffen.androidschool.taskmanager.ui.presenter.DoneTasksPresenter;
+import com.annevonwolffen.androidschool.taskmanager.ui.view.util.ResourceWrapper;
 
 public class DoneTasksFragment extends BaseTaskFragment<IBaseContract.IBasePresenter> {
     public static final String PAGE_TITLE = "Done";
-
-
 
     public DoneTasksFragment() {
         super(R.layout.fragment_done_tasks);
@@ -35,8 +34,7 @@ public class DoneTasksFragment extends BaseTaskFragment<IBaseContract.IBasePrese
 
     private void setPresenter() {
         TaskRepository repository = new TaskRepository(requireContext());
-        mPresenter = new DoneTasksPresenter(this, repository);
+        ResourceWrapper mResourcseWrapper = new ResourceWrapper(requireContext().getResources());
+        mPresenter = new DoneTasksPresenter(this, repository, mResourcseWrapper);
     }
-
-
 }

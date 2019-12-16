@@ -21,6 +21,7 @@ import com.annevonwolffen.androidschool.taskmanager.ui.alarm.AlarmReceiver;
 import com.annevonwolffen.androidschool.taskmanager.ui.contract.ICurrentTasksContract;
 import com.annevonwolffen.androidschool.taskmanager.ui.presenter.CurrentTasksPresenter;
 import com.annevonwolffen.androidschool.taskmanager.ui.view.dialogfragments.AddTaskDialogFragment;
+import com.annevonwolffen.androidschool.taskmanager.ui.view.util.ResourceWrapper;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.Date;
@@ -53,7 +54,8 @@ public class CurrentTasksFragment extends BaseTaskFragment<ICurrentTasksContract
     private void setPresenter() {
         TaskRepository repository = new TaskRepository(requireContext());
         setUpBroadcastReceiver();
-        mPresenter = new CurrentTasksPresenter(this, repository);
+        ResourceWrapper mResourcseWrapper = new ResourceWrapper(requireContext().getResources());
+        mPresenter = new CurrentTasksPresenter(this, repository, mResourcseWrapper);
     }
 
     private void setUpBroadcastReceiver() {

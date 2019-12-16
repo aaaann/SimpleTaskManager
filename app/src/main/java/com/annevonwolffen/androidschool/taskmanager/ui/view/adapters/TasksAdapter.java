@@ -3,6 +3,7 @@ package com.annevonwolffen.androidschool.taskmanager.ui.view.adapters;
 import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
+import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -79,19 +80,30 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.CurrentTaskV
         }
 
         @Override
+        public void setTitleColor(int color) {
+            mTitle.setTextColor(color);
+        }
+
+        @Override
         public void setTaskDateTime(String dateTime) {
             mDate.setText(dateTime);
         }
 
         @Override
-        public void setIconColor(int color) {
-            // todo: implement (change icon image in xml file)
+        public void setTaskIcon(Drawable drawable) {
+            mIcon.setImageDrawable(drawable);
         }
 
         @Override
-        public void setNotificationIcon(int color) {
-            // todo: implement
+        public void setNotificationIcon(Drawable drawable) {
+            mNotificationIcon.setImageDrawable(drawable);
         }
+
+        @Override
+        public void setTaskDateColor(int color) {
+            mDate.setTextColor(color);
+        }
+
 
         @Override
         public void setOnLongClickListener(Task task) {

@@ -86,13 +86,12 @@ public class AlarmReceiver extends BroadcastReceiver {
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context,
                 CHANNEL_ID)
-                .setSmallIcon(R.drawable.ic_priority_high_black_24dp)
+                .setSmallIcon(R.drawable.ic_event_note_black_24dp)
                 .setContentTitle(label)
                 .setContentText("Сделать до " + dateTime)
                 .setOnlyAlertOnce(true)
                 .setSound(alarmSound)
                 .setAutoCancel(true)
-                //.addAction(R.drawable.ic_stop_black_24dp, "Stop play", pausePendingIntent)
                 .setContentIntent(pendingIntent);
 
         return builder.build();
